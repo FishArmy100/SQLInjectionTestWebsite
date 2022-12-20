@@ -1,1 +1,43 @@
 ﻿# Indiana Jeans Website Requierments:
+- Fronted/UI
+    - Home page
+        - Product button: requires valid account
+        - Create account
+        - Cart button: requires valid account
+    - Sign in page
+        - User name
+        - Password
+        - Email
+        - Phone number
+        - Credit card info
+    - Sign up page
+        - Email
+        - Password
+    - Basic info page:
+        - Invalid sign in
+        - Confermation
+    - Product page
+        - Search Bar
+        - Item list
+        - Home button
+        - Cart button
+    - Cart
+    - Payment
+- Backend:
+    - User Accounts:
+        - User ID
+        - Email
+        - Phone Number
+        - User Name 
+        - Password
+        - Cart
+        - Credit card info
+            - Card number
+            - Experation date
+            - Security code
+    - Store Items
+        - Id
+        - Name
+        - Cost
+        - Description
+    - Uses SQL database
