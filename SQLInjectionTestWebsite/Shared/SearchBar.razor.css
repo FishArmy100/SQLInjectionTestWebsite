@@ -1,11 +1,6 @@
 ﻿
 div.searchbar {
-    border-width: 2px;
-    border-color: blue;
-    border-style: dashed;
-
     display: flex;
-    width: 50%;
     height: 30px;
     padding: 5px;
 }
