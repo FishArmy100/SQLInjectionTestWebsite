@@ -1,0 +1,19 @@
+﻿
+<div class="searchbar">
+	<input @bind="m_SearchedString" type="text" />
+	<button @onclick="OnSearch">Search</button>
+</div>
+
+@code {
+	private string? m_SearchedString = null;
+
+	[Parameter] public Action<string>? OnMessageSearched { get; set; }
+
+	private void OnSearch()
+	{
+		if (m_SearchedString != null && OnMessageSearched != null)
+			OnMessageSearched.Invoke(m_SearchedString);
+
+		Console.WriteLine("Button Clicked!: message = " + m_SearchedString);
+	}
+}
