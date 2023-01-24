@@ -4,15 +4,13 @@
         - Product button: requires valid account
         - Create account
         - Cart button: requires valid account
-    - Sign in page
+    - Sign in/up page
         - User name
         - Password
         - Email
         - Phone number
         - Credit card info
-    - Sign up page
         - Email
-        - Password
     - Basic info page:
         - Invalid sign in
         - Confermation
@@ -22,7 +20,11 @@
         - Home button
         - Cart button
     - Cart
-    - Payment
+        - Payment
+    - Modify Account page:
+        - Add cash
+        - Change password
+        - Change credit card
 - Backend:
     - User Accounts:
         - User ID
