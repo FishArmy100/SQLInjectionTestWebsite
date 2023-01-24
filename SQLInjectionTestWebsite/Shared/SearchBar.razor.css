@@ -11,5 +11,12 @@ div.searchbar {
 
 .searchbar button {
     float: right;
-    width: 30px
+    width: 30px;
+    padding: 0;
+}
+
+.searchbar button img {
+    width: 25px;
+    height: 25px;
+    margin: 0px;
 }

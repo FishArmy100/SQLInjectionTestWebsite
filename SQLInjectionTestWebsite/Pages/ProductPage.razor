@@ -1,0 +1,18 @@
+﻿@page "/ProductPage/{SearchedProduct}"
+@using SQLInjectionTestWebsite.Shared;
+@inject NavigationManager Navigation;
+
+<SearchBar OnMessageSearched="OnSearch"/>
+
+<h3>ProductPage</h3>
+@SearchedProduct;
+
+@code {
+	[Parameter]
+	public string SearchedProduct { get; set; } = "";
+
+	public void OnSearch(string name)
+	{
+		Navigation.NavigateTo("/ProductPage/" + name);
+	}
+}
