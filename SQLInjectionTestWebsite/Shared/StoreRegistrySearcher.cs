@@ -47,6 +47,6 @@
             return weight;
         }
 
-        private static string[] GetSearchTerms(string searched) => searched.Split(' ', ',', '-', '_');
+        private static string[] GetSearchTerms(string searched) => searched.Split(' ', ',', '-', '_').Select(s => s.ToLower()).ToArray();
     }
 }

@@ -5,14 +5,26 @@
 <SearchBar OnMessageSearched="OnSearch"/>
 
 <h3>ProductPage</h3>
-@SearchedProduct;
+<ul>
+	@foreach(StoreProduct product in products)
+	{
+		<li>@product.Name:@product.Count</li>
+	}
+</ul>
 
 @code {
 	[Parameter]
 	public string SearchedProduct { get; set; } = "";
 
+	private List<StoreProduct> products = new List<StoreProduct>();
+
 	public void OnSearch(string name)
 	{
 		Navigation.NavigateTo("/ProductPage/" + name);
+	}
+
+	protected override void OnParametersSet()
+	{
+		products = StoreRegistrySearcher.SearchForProducts(Store.Registry, SearchedProduct);
 	}
 }
