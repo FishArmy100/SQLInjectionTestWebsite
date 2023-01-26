@@ -1,0 +1,36 @@
+﻿
+@inject NavigationManager Navigation
+
+<div class = "navbar">
+	@foreach((string name, string path) in Pages)
+	{
+		if(CurrentPageName == name)
+		{
+			<a id="active" @onclick = "@(() => OnPageClicked(name))" href="" @onclick:preventDefault>@name</a>
+		}
+		else
+		{
+			<a @onclick = "@(() => OnPageClicked(name))" href = "" @onclick:preventDefault>@name</a>
+		}
+	}
+</div>
+
+@code {
+	[Parameter, EditorRequired]
+	public string CurrentPageName { get; set; } = "";
+
+	[Parameter]
+	public Dictionary<string, string> Pages { get; set; } = DefaultPageNames;
+
+	private void OnPageClicked(string name)
+	{
+		Navigation.NavigateTo(Pages[name]);
+	}
+
+	public static Dictionary<string, string> DefaultPageNames = new Dictionary<string, string>(){
+		{ "Home", "/" },
+		{ "Account", "/AccountInfoPage" },
+		{ "Cart", "/CartPage" },
+		{ "Sign In", "/SignInPage" }
+	};
+}
