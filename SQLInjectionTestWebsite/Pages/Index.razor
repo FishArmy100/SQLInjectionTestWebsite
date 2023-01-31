@@ -1,5 +1,6 @@
 ﻿@page "/"
-@using SQLInjectionTestWebsite.Shared;
+@using SQLInjectionTestWebsite.Shared
+@using SQLInjectionTestWebsite.Shared.SQLUtils
 @inject NavigationManager Navigation;
 
 <NavBar CurrentPageName="Home"></NavBar>
@@ -8,9 +9,16 @@
 	<SearchBar OnMessageSearched = "OnSearchProduct"/>
 </div>
 
+<button @onclick="CreateDatabase">Create Database</button>
+
 @code {
 	void OnSearchProduct(string name)
 	{
 		Navigation.NavigateTo("/ProductPage/" + name);
+	}
+
+	void CreateDatabase()
+	{
+		new SqliteDatabase("TestDatabase");
 	}
 }
