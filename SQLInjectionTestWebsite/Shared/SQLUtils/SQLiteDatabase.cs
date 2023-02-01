@@ -2,9 +2,12 @@
 
 namespace SQLInjectionTestWebsite.Shared.SQLUtils
 {
-    public class SqliteDatabase
+    public class SQLiteDatabase
     {
-        public SqliteDatabase(string name)
+		public readonly string Name;
+		public SQLiteConnection GetConnection() => new SQLiteConnection(Name);
+
+        public SQLiteDatabase(string name)
         {
 			string cs = "Data Source=:memory:";
 			string stm = "SELECT SQLITE_VERSION()";
