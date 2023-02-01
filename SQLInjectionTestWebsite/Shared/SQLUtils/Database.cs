@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.SQLite;
 
 namespace SQLInjectionTestWebsite.Shared.SQLUtils
 {
@@ -9,10 +9,10 @@ namespace SQLInjectionTestWebsite.Shared.SQLUtils
 			string cs = "Data Source=:memory:";
 			string stm = "SELECT SQLITE_VERSION()";
 
-			using var con = new SqliteConnection(cs);
+			using var con = new SQLiteConnection(cs);
 			con.Open();
 
-			using var cmd = new SqliteCommand(stm, con);
+			using var cmd = new SQLiteCommand(stm, con);
 			string? version = cmd.ExecuteScalar()?.ToString();
 
 			Console.WriteLine($"SQLite version: {version}");
