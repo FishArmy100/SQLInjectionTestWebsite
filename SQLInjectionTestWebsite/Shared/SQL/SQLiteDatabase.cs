@@ -1,6 +1,7 @@
 ﻿using System.Data.SQLite;
+using System.Reflection;
 
-namespace SQLInjectionTestWebsite.Shared.SQLUtils
+namespace SQLInjectionTestWebsite.Shared.SQL
 {
     public class SQLiteDatabase
     {
@@ -19,6 +20,15 @@ namespace SQLInjectionTestWebsite.Shared.SQLUtils
 			string? version = cmd.ExecuteScalar()?.ToString();
 
 			Console.WriteLine($"SQLite version: {version}");
+		}
+
+		public void ConstructTable<T>(string tableName, IEnumerable<T> items)
+		{
+			if(typeof(T).GetCustomAttribute<SQLSerializeableObject>() == null)
+				throw new ArgumentException("Type " + typeof(T).Name + " must have the attribute SQLSerializableObject");
+
+			var connection = GetConnection();
+
 		}
     }
 }

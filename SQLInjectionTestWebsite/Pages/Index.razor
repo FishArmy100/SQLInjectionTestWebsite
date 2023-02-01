@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using SQLInjectionTestWebsite.Shared
-@using SQLInjectionTestWebsite.Shared.SQLUtils
+@using SQLInjectionTestWebsite.Shared.SQL
 @inject NavigationManager Navigation;
 
 <NavBar CurrentPageName="Home"></NavBar>
@@ -17,8 +17,38 @@
 		Navigation.NavigateTo("/ProductPage/" + name);
 	}
 
+	struct Car
+	{
+		public readonly string Name;
+		public readonly int Count;
+
+		public Car(string n, int c)
+		{
+			Name = n;
+			Count = c;
+		}
+	}
+
 	void CreateDatabase()
 	{
-		new SqliteDatabase("TestDatabase");
+		string db = "Test";
+
+		string tableCommand1 = @"DROP TABLE IF EXISTS cars";
+
+		string tableCommand2 = "CREATE TABLE cars(name TEXT, count INT)";
+		string tableCommand3 = "INSERT INTO cars(name, count) VALUES('Honda', 5)";
+
+		string readCommand = @"SELECT * FROM cars";
+
+		SQLUtils.ExecuteCommand(db, tableCommand1);
+		SQLUtils.ExecuteCommand(db, tableCommand2);
+		SQLUtils.ExecuteCommand(db, tableCommand3);
+		var cars = SQLUtils.ExecuteReadCommand(db, readCommand, (reader) =>
+		{
+			return new Car(reader.GetString(0), reader.GetInt32(1));
+		});
+
+		foreach (Car car in cars)
+			Console.WriteLine($"{car.Name}: {car.Count}");
 	}
 }
