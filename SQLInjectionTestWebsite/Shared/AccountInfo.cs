@@ -1,16 +1,26 @@
-﻿namespace SQLInjectionTestWebsite.Shared
+﻿using SQLInjectionTestWebsite.Shared.SQL;
+
+namespace SQLInjectionTestWebsite.Shared
 {
+    [SQLSerializeableObject]
     public class AccountInfo
     {
+        [SQLSerializeableField]
         public readonly string UserName;
-        public readonly string Password;
-        public readonly string Email;
-        public readonly string CreditCardNumber;
-        public readonly string ID;
-        public decimal CurrentBalance;
-        public readonly bool IsAdmin;
+		[SQLSerializeableField]
+		public readonly string Password;
+		[SQLSerializeableField]
+		public readonly string Email;
+		[SQLSerializeableField]
+		public readonly string CreditCardNumber;
+		[SQLSerializeableField]
+		public readonly string ID;
+		[SQLSerializeableField]
+		public float CurrentBalance;
+		//[SQLSerializeableField]
+		public readonly bool IsAdmin;
 
-        public AccountInfo(string userName, string password, string email, string creditCardNumber, string iD, decimal currentBalance, bool isAdmin)
+        public AccountInfo(string userName, string password, string email, string creditCardNumber, string iD, float currentBalance, bool isAdmin)
         {
             UserName = userName;
             Password = password;
@@ -21,7 +31,7 @@
             IsAdmin = isAdmin;
         }
 
-        public static AccountInfo GenAccount(string userName, string password, string email, string creditCardNumber, decimal currentBalance = 0, bool isAdmin = false)
+        public static AccountInfo GenAccount(string userName, string password, string email, string creditCardNumber, float currentBalance = 0, bool isAdmin = false)
         {
             string id = Guid.NewGuid().ToString();
             return new AccountInfo(userName, password, email, creditCardNumber, id, currentBalance, isAdmin);

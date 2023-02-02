@@ -14,13 +14,15 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			m_Connection = GetConnection(name);
 		}
 
-		public void ExecuteCommand(string commandString)
+		public int ExecuteCommand(string commandString)
 		{
 			m_Connection.Open();
 			using SQLiteCommand command = m_Connection.CreateCommand();
 			command.CommandText = commandString;
-			command.ExecuteNonQuery();
+			int changedRows = command.ExecuteNonQuery();
 			m_Connection.Close();
+
+			return changedRows;
 		}
 
 		public void SerializeObjects<T>(string tableName, IEnumerable<T> objects)
@@ -29,9 +31,9 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			ExecuteCommand(commands);
 		}
 
-		public List<T> DeserializeObjects<T>(string selector)
+		public List<T> DeserializeObjects<T>(string tableName, string selector)
 		{
-			return ExecuteReadCommand(selector, r => SQLSerializer.Deserialize<T>(r));
+			return SQLSerializer.Deserialize<T>(tableName, selector, this);
 		}
 
 		public List<T> ExecuteReadCommand<T>(string commandString, Func<SQLiteDataReader, T> valueConverter)

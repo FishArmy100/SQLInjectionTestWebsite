@@ -48,9 +48,24 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			return commands;
 		}
 
-		public static T Deserialize<T>(SQLiteDataReader reader)
+		public static List<T> Deserialize<T>(string tableName, string selectorCommand, SQLiteDatabase database)
 		{
 			CheckType<T>();
+
+			string[] tableColumns = GetTableColumns<T>();
+			string commands = $"CREATE TABLE IF NOT EXISTS {tableName} ({string.Join(", ", tableColumns)});\n";
+
+			commands += selectorCommand;
+
+			return database.ExecuteReadCommand(commands, r =>
+			{
+				return ReadObject<T>(r);
+			});
+
+		}
+
+		private static T ReadObject<T>(SQLiteDataReader reader)
+		{
 			object instance = FormatterServices.GetUninitializedObject(typeof(T));
 
 			typeof(T).GetFields()

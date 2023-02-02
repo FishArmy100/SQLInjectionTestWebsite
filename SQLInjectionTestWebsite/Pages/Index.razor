@@ -35,17 +35,14 @@
 
 	void CreateDatabase()
 	{
-		SQLiteDatabase database = new SQLiteDatabase("Test");
-		Car[] cars = new Car[] { new Car("Ford", 15), new Car("Prius", 20), new Car("Farari", 2), new Car("Tesla", 10) };
+		AccountInfo info = new AccountInfo("Bob", "234", "bobbob@gmail.com", "444-555-666", "bobbob", 0, false);
+		Console.WriteLine("Created account: " + WebsiteDatabase.TryCreateAccount(info));
 
-		string deleteCommand = "DELETE FROM cars";
-		database.ExecuteCommand(deleteCommand);
+		AccountInfo gottenAccount = WebsiteDatabase.TryGetAccount("Bob", "234").Value;
+		Console.WriteLine("Got account: " + gottenAccount.UserName + ", Balance = " + gottenAccount.CurrentBalance);
 
-		database.SerializeObjects("cars", cars);
-
-		List<Car> list = database.DeserializeObjects<Car>("SELECT * FROM cars");
-
-		foreach (Car car in list)
-			Console.WriteLine($"{car.Name}: {car.Count}");
+		Console.WriteLine("Updated ballance: " + WebsiteDatabase.UpdateAccountBallance("Bob", "234", 50));
+		gottenAccount = WebsiteDatabase.TryGetAccount("Bob", "234").Value;
+		Console.WriteLine("New ballance = " + gottenAccount.CurrentBalance);
 	}
 }
