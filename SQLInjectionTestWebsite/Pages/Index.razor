@@ -17,10 +17,14 @@
 		Navigation.NavigateTo("/ProductPage/" + name);
 	}
 
+	[SQLSerializeableObject]
 	struct Car
 	{
-		public readonly string Name;
-		public readonly int Count;
+		[SQLSerializeableField]
+		public string Name;
+
+		[SQLSerializeableField]
+		public int Count;
 
 		public Car(string n, int c)
 		{
@@ -31,24 +35,17 @@
 
 	void CreateDatabase()
 	{
-		string db = "Test";
+		SQLiteDatabase database = new SQLiteDatabase("Test");
+		Car[] cars = new Car[] { new Car("Ford", 15), new Car("Prius", 20), new Car("Farari", 2), new Car("Tesla", 10) };
 
-		string tableCommand1 = @"DROP TABLE IF EXISTS cars";
+		string deleteCommand = "DELETE FROM cars";
+		database.ExecuteCommand(deleteCommand);
 
-		string tableCommand2 = "CREATE TABLE cars(name TEXT, count INT)";
-		string tableCommand3 = "INSERT INTO cars(name, count) VALUES('Honda', 5)";
+		database.SerializeObjects("cars", cars);
 
-		string readCommand = @"SELECT * FROM cars";
+		List<Car> list = database.DeserializeObjects<Car>("SELECT * FROM cars");
 
-		SQLUtils.ExecuteCommand(db, tableCommand1);
-		SQLUtils.ExecuteCommand(db, tableCommand2);
-		SQLUtils.ExecuteCommand(db, tableCommand3);
-		var cars = SQLUtils.ExecuteReadCommand(db, readCommand, (reader) =>
-		{
-			return new Car(reader.GetString(0), reader.GetInt32(1));
-		});
-
-		foreach (Car car in cars)
+		foreach (Car car in list)
 			Console.WriteLine($"{car.Name}: {car.Count}");
 	}
 }

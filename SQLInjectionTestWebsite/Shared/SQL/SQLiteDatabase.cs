@@ -6,29 +6,55 @@ namespace SQLInjectionTestWebsite.Shared.SQL
     public class SQLiteDatabase
     {
 		public readonly string Name;
-		public SQLiteConnection GetConnection() => new SQLiteConnection(Name);
+		private readonly SQLiteConnection m_Connection;
 
-        public SQLiteDatabase(string name)
-        {
-			string cs = "Data Source=:memory:";
-			string stm = "SELECT SQLITE_VERSION()";
-
-			using var con = new SQLiteConnection(cs);
-			con.Open();
-
-			using var cmd = new SQLiteCommand(stm, con);
-			string? version = cmd.ExecuteScalar()?.ToString();
-
-			Console.WriteLine($"SQLite version: {version}");
-		}
-
-		public void ConstructTable<T>(string tableName, IEnumerable<T> items)
+		public SQLiteDatabase(string name)
 		{
-			if(typeof(T).GetCustomAttribute<SQLSerializeableObject>() == null)
-				throw new ArgumentException("Type " + typeof(T).Name + " must have the attribute SQLSerializableObject");
-
-			var connection = GetConnection();
-
+			Name = name;
+			m_Connection = GetConnection(name);
 		}
-    }
+
+		public void ExecuteCommand(string commandString)
+		{
+			m_Connection.Open();
+			using SQLiteCommand command = m_Connection.CreateCommand();
+			command.CommandText = commandString;
+			command.ExecuteNonQuery();
+			m_Connection.Close();
+		}
+
+		public void SerializeObjects<T>(string tableName, IEnumerable<T> objects)
+		{
+			string commands = SQLSerializer.GetSerializeCommands(tableName, objects);
+			ExecuteCommand(commands);
+		}
+
+		public List<T> DeserializeObjects<T>(string selector)
+		{
+			return ExecuteReadCommand(selector, r => SQLSerializer.Deserialize<T>(r));
+		}
+
+		public List<T> ExecuteReadCommand<T>(string commandString, Func<SQLiteDataReader, T> valueConverter)
+		{
+			m_Connection.Open();
+			using SQLiteCommand command = m_Connection.CreateCommand();
+			command.CommandText = commandString;
+			using SQLiteDataReader reader = command.ExecuteReader();
+
+			List<T> result = new List<T>();
+			while (reader.Read())
+				result.Add(valueConverter(reader));
+
+			m_Connection.Close();
+			return result;
+		}
+
+		private static SQLiteConnection GetConnection(string databaseName)
+		{
+			string location = Assembly.GetExecutingAssembly().Location;
+			string? folder = Path.GetDirectoryName(location);
+			string uri = $"{folder}\\{databaseName}.db";
+			return new SQLiteConnection($"URI=file:{uri}");
+		}
+	}
 }
