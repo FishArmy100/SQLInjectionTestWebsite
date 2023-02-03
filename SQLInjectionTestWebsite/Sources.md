@@ -1,2 +1,2 @@
 # Sources
-- https://stackoverflow.com/questions/172735/create-use-user-defined-functions-in-system-data-sqlite
+- [Custom SQLite Functions](https://stackoverflow.com/questions/172735/create-use-user-defined-functions-in-system-data-sqlite)
