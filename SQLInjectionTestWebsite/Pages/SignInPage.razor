@@ -1,9 +1,58 @@
 ﻿@page "/SignInPage"
 @using SQLInjectionTestWebsite.Shared
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms;
 
 <NavBar CurrentPageName="Sign In"></NavBar>
 <h3>SignInPage</h3>
 
-@code {
+@if(m_IsSignedIn)
+{
+	
+}
+else
+{
+	<EditForm Model=@m_CurrentModel>
+		<div class="form-group">
+			<label for="UserName">Username:</label>
+			<InputText @bind-Value=m_CurrentModel.UserName class="form-control" id="UserName"></InputText>
+		</div>
+		<div class="form-group">
+			<label for="Password">Password:</label>
+			<InputText @bind-Value=m_CurrentModel.Password class="form-control" id="Password"></InputText>
+		</div>
+		<div class="form-group">
+			<label for="Email">Email:</label>
+			<InputText @bind-Value=m_CurrentModel.Email class="form-control" id="Email"></InputText>
+		</div>
+		<div class="form-group">
+			<label for="CCN">Credit Card:</label>
+			<InputText @bind-Value=m_CurrentModel.CreditCardNumber class="form-control" id="CCN"></InputText>
+		</div>
+		<div class="form-group">
+			<label for="IsAdmin">Is Admin:</label>
+			<InputCheckbox @bind-Value=m_CurrentModel.IsAdmin class="form-control" id="IsAdmin"></InputCheckbox>
+		</div>
+		<input type="submit" class="btn btn-primary" value="Save"/>
+	</EditForm>
+}
 
+@code {
+	public bool m_IsSignedIn => Store.CurrentUser.HasValue();
+
+	private AccountModel m_CurrentModel { get; set; } = new AccountModel();
+
+	class AccountModel
+	{
+		[Required]
+		public string UserName = "";
+		[Required]
+		public string Password = "";
+		[Required]
+		public string Email = "";
+		[Required]
+		public string CreditCardNumber = "";
+		[Required]
+		public bool IsAdmin = false; 
+	}
 }

@@ -23,7 +23,7 @@ namespace SQLInjectionTestWebsite.Shared
 			GenProduct("Model Ark of the Covenent", 40000.0f, 1)
 		});
 
-		public static Option<AccountInfo> CurrentUser { get; set; } = AccountInfo.GenAccount("Bob", "1234567", "bob@gmail.com", "0123456789");
+		public static Option<AccountInfo> CurrentUser { get; set; } = new Option<AccountInfo>();
 
 		private static StoreProduct GenProduct(string name, float price, uint count) => new StoreProduct(new ProductInfo(name, price, ""), count);
 	}

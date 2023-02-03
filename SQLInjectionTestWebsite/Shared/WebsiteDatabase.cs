@@ -23,7 +23,7 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static Option<AccountInfo> TryGetAccount(string accountName, string password)
 		{
-			var accounts = s_Database.DeserializeObjects<AccountInfo>(AccountsTableName, $"SELECT * FROM {AccountsTableName} WHERE UserName = '{accountName} AND Password = '{password}'' LIMIT 1");
+			var accounts = s_Database.DeserializeObjects<AccountInfo>(AccountsTableName, $"SELECT * FROM {AccountsTableName} WHERE UserName = '{accountName}' AND Password = '{password}' LIMIT 1");
 			if(accounts.Count > 0)
 				return new Option<AccountInfo>(accounts[0]);
 

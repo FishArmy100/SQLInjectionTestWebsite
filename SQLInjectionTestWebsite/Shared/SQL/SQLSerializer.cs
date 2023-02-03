@@ -11,6 +11,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			Int32,
 			Float,
 			String,
+			Bool,
 		}
 
 		private class FieldData
@@ -85,6 +86,9 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 						case PrimativeType.String:
 							f.SetValue(instance, reader.GetString(index));
 							break;
+						case PrimativeType.Bool:
+							f.SetValue(instance, reader.GetInt32(index) == 1);	
+							break;
 					}
 				});
 
@@ -125,6 +129,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 				PrimativeType.Int32 => "int",
 				PrimativeType.Float => "FLOAT",
 				PrimativeType.String => "TEXT",
+				PrimativeType.Bool => "int",
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -136,6 +141,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 				PrimativeType.Int32 => $"'{(int)value}'",
 				PrimativeType.Float => $"'{(float)value}'",
 				PrimativeType.String => $"'{(string)value}'",
+				PrimativeType.Bool => (((bool)value) ? "1" : "0"),
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -148,6 +154,8 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 				return PrimativeType.Float;
 			else if (type == typeof(string))
 				return PrimativeType.String;
+			else if(type == typeof(bool))
+				 return PrimativeType.Bool;
 
 			throw new ArgumentException($"Type '{type.Name}' is not a supported primative type.");
 		}

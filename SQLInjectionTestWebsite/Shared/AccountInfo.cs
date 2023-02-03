@@ -17,7 +17,7 @@ namespace SQLInjectionTestWebsite.Shared
 		public readonly string ID;
 		[SQLSerializeableField]
 		public float CurrentBalance;
-		//[SQLSerializeableField]
+		[SQLSerializeableField]
 		public readonly bool IsAdmin;
 
         public AccountInfo(string userName, string password, string email, string creditCardNumber, string iD, float currentBalance, bool isAdmin)

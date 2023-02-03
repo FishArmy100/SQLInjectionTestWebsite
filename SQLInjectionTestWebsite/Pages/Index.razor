@@ -17,22 +17,6 @@
 		Navigation.NavigateTo("/ProductPage/" + name);
 	}
 
-	[SQLSerializeableObject]
-	struct Car
-	{
-		[SQLSerializeableField]
-		public string Name;
-
-		[SQLSerializeableField]
-		public int Count;
-
-		public Car(string n, int c)
-		{
-			Name = n;
-			Count = c;
-		}
-	}
-
 	void CreateDatabase()
 	{
 		AccountInfo info = new AccountInfo("Bob", "234", "bobbob@gmail.com", "444-555-666", "bobbob", 0, false);
