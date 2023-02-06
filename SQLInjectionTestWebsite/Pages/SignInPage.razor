@@ -2,6 +2,7 @@
 @using SQLInjectionTestWebsite.Shared
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms;
+@using SQLInjectionTestWebsite.Shared.Utils
 
 <NavBar CurrentPageName="Sign In"></NavBar>
 <h3>SignInPage</h3>
@@ -9,12 +10,12 @@
 @if(m_IsSignedIn)
 {
 	<div>
-		Log Out:
+		<button @onclick="OnSignOut">Sign Out</button>
 	</div>
 }
 else
 {
-	<EditForm Model=@m_CurrentModel>
+	<EditForm Model=@m_CurrentModel OnValidSubmit="@OnSignIn" OnInvalidSubmit="@OnFailedSignIn">
 		<div class="form-group">
 			<label for="UserName">Username:</label>
 			<InputText @bind-Value=m_CurrentModel.UserName class="form-control" id="UserName"></InputText>
@@ -37,24 +38,66 @@ else
 		</div>
 		<input type="submit" class="btn btn-primary" value="Save"/>
 	</EditForm>
+
+	@if(m_FailedSignIn)
+	{
+		<div>
+			<style>
+				div {
+					color: red;
+					border: dashed;
+				}
+			</style>
+			<div>
+				Failed to sign in, please try again.
+			</div>
+		</div>
+
+		<div>Test</div>
+	}
 }
 
 @code {
-	public bool m_IsSignedIn => Store.CurrentUser.HasValue();
+	private bool m_IsSignedIn => Store.CurrentUser.HasValue();
 
 	private AccountModel m_CurrentModel { get; set; } = new AccountModel();
+	private bool m_FailedSignIn = false;
 
 	class AccountModel
 	{
 		[Required]
-		public string UserName = "";
+		[StringLength(64, MinimumLength = 4, ErrorMessage = "Username must be between 4-64 charictors long.")]
+		public string? UserName = "";
 		[Required]
-		public string Password = "";
+		[StringLength(64, MinimumLength = 8, ErrorMessage = "Password must be between 8-64 charictors long.")]
+		public string? Password = "";
 		[Required]
-		public string Email = "";
+		public string? Email = "";
 		[Required]
-		public string CreditCardNumber = "";
+		public string? CreditCardNumber = "";
 		[Required]
 		public bool IsAdmin = false; 
+	}
+
+	void OnSignOut()
+	{
+		Store.CurrentUser = new Option<AccountInfo>();
+	}
+
+	void OnFailedSignIn(EditContext context)
+	{
+		m_FailedSignIn = true;
+	}
+
+	void OnSignIn(EditContext context)
+	{
+		AccountInfo info = AccountInfo.GenAccount(m_CurrentModel.UserName!, 
+												  m_CurrentModel.Password!, 
+												  m_CurrentModel.Email!, 
+												  m_CurrentModel.CreditCardNumber!, 
+												  0, 
+												  m_CurrentModel.IsAdmin);
+
+		Store.CurrentUser = info;
 	}
 }
