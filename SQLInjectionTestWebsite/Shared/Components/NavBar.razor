@@ -1,4 +1,4 @@
-﻿
+﻿@using SQLInjectionTestWebsite.Shared.Utils
 @inject NavigationManager Navigation
 
 <div class = "navbar">
@@ -13,6 +13,11 @@
 			<a @onclick = "@(() => OnPageClicked(name))" href = "" @onclick:preventDefault>@name</a>
 		}
 	}
+
+	<div id="user-name">
+		Hi @(Store.CurrentUser.Match(ok => ok.UserName, () => "Guest"))!
+	</div>
+
 </div>
 
 @code {
@@ -21,6 +26,11 @@
 
 	[Parameter]
 	public Dictionary<string, string> Pages { get; set; } = DefaultPageNames;
+
+	protected override void OnInitialized()
+	{
+		Store.CurrentUserChanged += async (_, _) => { await InvokeAsync(StateHasChanged); };
+	}
 
 	private void OnPageClicked(string name)
 	{
@@ -33,4 +43,11 @@
 		{ "Cart", "/CartPage" },
 		{ "Sign In", "/SignInPage" }
 	};
+
+	private static Option<string> GetUserName()
+	{
+		return Store.CurrentUser.Match(
+			ok => new Option<string>(ok.UserName),
+			() => new Option<string>());
+	}
 }

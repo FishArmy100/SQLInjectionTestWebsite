@@ -6,7 +6,7 @@
 @using SQLInjectionTestWebsite.Shared.Components;
 
 <NavBar CurrentPageName="Sign In"></NavBar>
-<h3>SignInPage</h3>
+<h3>Sign In Page:</h3>
 
 @if(m_CurrentState != SignInState.SelectingSignIn)
 {
@@ -40,8 +40,6 @@ else if(m_CurrentState == SignInState.SigningIn)
 		<button @onclick="OnSignOut">Sign Out</button>
 	</div>
 }
-
-@Store.CurrentUser.HasValue().ToString()
 
 @code {
 	private bool m_IsSignedIn => Store.CurrentUser.HasValue();
