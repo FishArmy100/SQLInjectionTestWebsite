@@ -8,21 +8,51 @@
 <NavBar CurrentPageName="Sign In"></NavBar>
 <h3>SignInPage</h3>
 
+@if(m_CurrentState != SignInState.SelectingSignIn)
+{
+	<div>
+		<button @onclick="@(() => m_CurrentState = SignInState.SelectingSignIn)">Back</button>
+	</div>
+}
+
+@if(m_CurrentState == SignInState.SelectingSignIn)
+{
+	<div>
+		<button @onclick="@(() => m_CurrentState = SignInState.SigningIn)">Sign In</button>
+	</div>
+
+	<div>
+		<button @onclick="@(() => m_CurrentState = SignInState.CreatingAccount)">Create Account</button>
+	</div>
+}
+else if(m_CurrentState == SignInState.CreatingAccount)
+{
+	<AccountCreator OnValidAccountCreated="OnValidAccountCreated"/>
+}
+else if(m_CurrentState == SignInState.SigningIn)
+{
+	<SignInComponent OnValidSignIn="OnValidSignIn"/>
+}
+
 @if(m_IsSignedIn)
 {
 	<div>
 		<button @onclick="OnSignOut">Sign Out</button>
 	</div>
 }
-else
-{
-	<AccountCreator OnValidAccountCreated="OnValidAccountCreated" />
-}
 
 @Store.CurrentUser.HasValue().ToString()
 
 @code {
 	private bool m_IsSignedIn => Store.CurrentUser.HasValue();
+	private SignInState m_CurrentState = SignInState.SelectingSignIn;
+
+	enum SignInState
+	{
+		SelectingSignIn,
+		SigningIn,
+		CreatingAccount,
+	}
 
 	void OnSignOut()
 	{
@@ -32,6 +62,14 @@ else
 	void OnValidAccountCreated(AccountInfo info)
 	{
 		Store.CurrentUser = new Option<AccountInfo>(info);
+		m_CurrentState = SignInState.SelectingSignIn;
+		StateHasChanged();
+	}
+
+	void OnValidSignIn(AccountInfo info)
+	{
+		Store.CurrentUser = new Option<AccountInfo>(info);
+		m_CurrentState = SignInState.SelectingSignIn;
 		StateHasChanged();
 	}
 }

@@ -1,5 +1,61 @@
-﻿
+﻿@using SQLInjectionTestWebsite.Shared
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms;
+@using SQLInjectionTestWebsite.Shared.Utils
+@using SQLInjectionTestWebsite.Shared.Components;
+
+<EditForm Model=@m_CurrentModel OnValidSubmit="@OnSignIn">
+	<style>
+		div .error-message {
+			color: red;
+		}
+	</style>
+	<DataAnnotationsValidator/>
+	<div class="form-group">
+		<label for="UserName">Username:</label>
+		<InputText @bind-Value=m_CurrentModel.Username class="form-control" id="UserName"></InputText>
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.Username)" /></div>
+	</div>
+	<div class="form-group">
+		<label for="Password">Password:</label>
+		<InputText @bind-Value=m_CurrentModel.Password class="form-control" id="Password"></InputText>
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.Password)" /></div>
+	</div>
+	<input type="submit" class="btn btn-primary" value="Save"/>
+</EditForm>
+
+@if (m_SignInFailed)
+{
+	<div>
+		<style>
+			div #sign-in-error {
+				color: red;
+				border: dashed;
+				border-color: red;
+			}
+		</style>
+		<div id="sign-in-error">
+			Unknown account name, please try again.
+		</div>
+	</div>
+}
 
 @code {
+	private SignInModel m_CurrentModel { get; set; } = new SignInModel();
+	[Parameter, EditorRequired] public Action<AccountInfo> OnValidSignIn { get; set; } = null!;
+	private bool m_SignInFailed = false;
 
+	class SignInModel
+	{
+		[Required]
+		public string? Username { get; set; }
+		[Required]
+		public string? Password { get; set; }
+	}
+
+	void OnSignIn(EditContext context)
+	{
+		var item = WebsiteDatabase.TryGetAccount(m_CurrentModel.Username!, m_CurrentModel.Password!);
+		item.Match(ok => OnValidSignIn(ok), () => m_SignInFailed = true);
+	}
 }

@@ -5,32 +5,36 @@
 
 
 <EditForm Model=@m_CurrentModel OnValidSubmit="@OnCreateAccount">
+	<style>
+		div .error-message {
+			color: red;
+		}
+	</style>
 	<DataAnnotationsValidator/>
-	<ValidationSummary/>
 	<div class="form-group">
 		<label for="UserName">Username:</label>
 		<InputText @bind-Value=m_CurrentModel.UserName class="form-control" id="UserName"></InputText>
-		<ValidationMessage For="@(()=>m_CurrentModel.UserName)" />
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.UserName)" /></div>
 	</div>
 	<div class="form-group">
 		<label for="Password">Password:</label>
 		<InputText @bind-Value=m_CurrentModel.Password class="form-control" id="Password"></InputText>
-		<ValidationMessage For = "@(()=>m_CurrentModel.Password)"/>
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.Password)" /></div>
 	</div>
 	<div class="form-group">
 		<label for="Email">Email:</label>
 		<InputText @bind-Value=m_CurrentModel.Email class="form-control" id="Email"></InputText>
-		<ValidationMessage For="@(()=>m_CurrentModel.Email)" />
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.Email)" /></div>
 	</div>
 	<div class="form-group">
 		<label for="CCN">Credit Card:</label>
 		<InputText @bind-Value=m_CurrentModel.CreditCardNumber class="form-control" id="CCN"></InputText>
-		<ValidationMessage For="@(()=>m_CurrentModel.CreditCardNumber)" />
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.CreditCardNumber)" /></div>
 	</div>
 	<div class="form-group">
 		<label for="IsAdmin">Is Admin:</label>
 		<InputCheckbox @bind-Value=m_CurrentModel.IsAdmin class="form-control" id="IsAdmin"></InputCheckbox>
-		<ValidationMessage For="@(()=>m_CurrentModel.IsAdmin)" />
+		<div class="error-message"><ValidationMessage For="@(()=>m_CurrentModel.IsAdmin)" /></div>
 	</div>
 	<input type="submit" class="btn btn-primary" value="Save"/>
 </EditForm>
@@ -63,16 +67,16 @@
 	{
 		[Required]
 		[StringLength(64, MinimumLength = 4, ErrorMessage = "Username must be between 4-64 charictors long.")]
-		public string? UserName = "";
+		public string? UserName { get; set; } = "";
 		[Required]
 		[StringLength(64, MinimumLength = 8, ErrorMessage = "Password must be between 8-64 charictors long.")]
-		public string? Password = "";
+		public string? Password { get; set; } = "";
 		[Required]
-		public string? Email = "";
+		public string? Email { get; set; } = "";
 		[Required]
-		public string? CreditCardNumber = "";
-		[Required]
-		public bool IsAdmin = false;
+		public string? CreditCardNumber { get; set; } = "";
+
+		public bool IsAdmin { get; set; } = false;
 	}
 
 	void OnCreateAccount(EditContext context)
