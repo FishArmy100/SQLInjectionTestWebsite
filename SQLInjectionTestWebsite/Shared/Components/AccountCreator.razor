@@ -77,12 +77,19 @@
 
 	void OnCreateAccount(EditContext context)
 	{
-		AccountInfo info = AccountInfo.GenAccount(m_CurrentModel.UserName ?? throw new NullReferenceException(),
-												  m_CurrentModel.Password ?? throw new NullReferenceException(),
-												  m_CurrentModel.Email ?? throw new NullReferenceException(),
-												  m_CurrentModel.CreditCardNumber ?? throw new NullReferenceException(),
-												  0,
-												  m_CurrentModel.IsAdmin);
+		AccountInfo info = 
+		AccountInfo.GenAccount(m_CurrentModel.UserName ?? throw new NullReferenceException(), m_CurrentModel.Password ?? throw new NullReferenceException(), m_CurrentModel.Email ?? throw new NullReferenceException(), m_CurrentModel.CreditCardNumber ?? throw new NullReferenceException(), 0, m_CurrentModel.IsAdmin);
+
+
+		ValidationContext c = new ValidationContext(m_CurrentModel);
+		try { Validator.ValidateObject(m_CurrentModel, c); }
+		catch(ValidationException e)
+		{
+			m_FailedToSignInError = e.Message;
+			return;
+		}
+
+
 		if(ValidateAccount(info))
 			OnValidAccountCreated(info);
 	}
