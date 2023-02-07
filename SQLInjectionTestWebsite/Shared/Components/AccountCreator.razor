@@ -1,0 +1,98 @@
+﻿@using SQLInjectionTestWebsite.Shared
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms;
+@using SQLInjectionTestWebsite.Shared.Utils
+
+
+<EditForm Model=@m_CurrentModel OnValidSubmit="@OnCreateAccount">
+	<DataAnnotationsValidator/>
+	<ValidationSummary/>
+	<div class="form-group">
+		<label for="UserName">Username:</label>
+		<InputText @bind-Value=m_CurrentModel.UserName class="form-control" id="UserName"></InputText>
+		<ValidationMessage For="@(()=>m_CurrentModel.UserName)" />
+	</div>
+	<div class="form-group">
+		<label for="Password">Password:</label>
+		<InputText @bind-Value=m_CurrentModel.Password class="form-control" id="Password"></InputText>
+		<ValidationMessage For = "@(()=>m_CurrentModel.Password)"/>
+	</div>
+	<div class="form-group">
+		<label for="Email">Email:</label>
+		<InputText @bind-Value=m_CurrentModel.Email class="form-control" id="Email"></InputText>
+		<ValidationMessage For="@(()=>m_CurrentModel.Email)" />
+	</div>
+	<div class="form-group">
+		<label for="CCN">Credit Card:</label>
+		<InputText @bind-Value=m_CurrentModel.CreditCardNumber class="form-control" id="CCN"></InputText>
+		<ValidationMessage For="@(()=>m_CurrentModel.CreditCardNumber)" />
+	</div>
+	<div class="form-group">
+		<label for="IsAdmin">Is Admin:</label>
+		<InputCheckbox @bind-Value=m_CurrentModel.IsAdmin class="form-control" id="IsAdmin"></InputCheckbox>
+		<ValidationMessage For="@(()=>m_CurrentModel.IsAdmin)" />
+	</div>
+	<input type="submit" class="btn btn-primary" value="Save"/>
+</EditForm>
+
+
+@if (m_FailedToSignInError.HasValue())
+{
+	<div>
+		<style>
+			div #sign-in-error{
+				color: red;
+				border: dashed;
+				border-color: red;
+			}
+		</style>
+		<div id="sign-in-error">
+			@m_FailedToSignInError.Value
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter, EditorRequired]
+	public Action<AccountInfo> OnValidAccountCreated { get; set; } = null!;
+
+	private AccountModel m_CurrentModel { get; set; } = new AccountModel();
+	private Option<string> m_FailedToSignInError;
+
+	class AccountModel
+	{
+		[Required]
+		[StringLength(64, MinimumLength = 4, ErrorMessage = "Username must be between 4-64 charictors long.")]
+		public string? UserName = "";
+		[Required]
+		[StringLength(64, MinimumLength = 8, ErrorMessage = "Password must be between 8-64 charictors long.")]
+		public string? Password = "";
+		[Required]
+		public string? Email = "";
+		[Required]
+		public string? CreditCardNumber = "";
+		[Required]
+		public bool IsAdmin = false;
+	}
+
+	void OnCreateAccount(EditContext context)
+	{
+		AccountInfo info = AccountInfo.GenAccount(m_CurrentModel.UserName ?? throw new NullReferenceException(),
+												  m_CurrentModel.Password ?? throw new NullReferenceException(),
+												  m_CurrentModel.Email ?? throw new NullReferenceException(),
+												  m_CurrentModel.CreditCardNumber ?? throw new NullReferenceException(),
+												  0,
+												  m_CurrentModel.IsAdmin);
+		if(ValidateAccount(info))
+			OnValidAccountCreated(info);
+	}
+
+	bool ValidateAccount(AccountInfo info)
+	{
+		bool created = WebsiteDatabase.TryCreateAccount(info);
+		if (!created)
+			m_FailedToSignInError = $"Account with the username '{info.UserName}' already exists.";
+
+		return created;
+	}
+}

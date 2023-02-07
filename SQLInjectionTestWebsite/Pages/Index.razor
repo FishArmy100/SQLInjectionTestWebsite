@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using SQLInjectionTestWebsite.Shared
+@using SQLInjectionTestWebsite.Shared.Components;
 @using SQLInjectionTestWebsite.Shared.SQL
 @inject NavigationManager Navigation;
 
@@ -10,6 +11,7 @@
 </div>
 
 <button @onclick="CreateDatabase">Create Database</button>
+<button @onclick="OnClearStoreDatabase">Clear Store Database</button>
 
 @code {
 	void OnSearchProduct(string name)
@@ -28,5 +30,12 @@
 		Console.WriteLine("Updated ballance: " + WebsiteDatabase.UpdateAccountBallance("Bob", "234", 50));
 		gottenAccount = WebsiteDatabase.TryGetAccount("Bob", "234").Value;
 		Console.WriteLine("New ballance = " + gottenAccount.CurrentBalance);
+	}
+
+	void OnClearStoreDatabase()
+	{
+		SQLiteDatabase database = new SQLiteDatabase(WebsiteDatabase.DatabaseName);
+		database.DropTable(WebsiteDatabase.ProductsTableName);
+		database.DropTable(WebsiteDatabase.AccountsTableName);
 	}
 }

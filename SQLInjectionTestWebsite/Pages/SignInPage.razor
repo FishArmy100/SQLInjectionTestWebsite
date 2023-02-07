@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms;
 @using SQLInjectionTestWebsite.Shared.Utils
+@using SQLInjectionTestWebsite.Shared.Components;
 
 <NavBar CurrentPageName="Sign In"></NavBar>
 <h3>SignInPage</h3>
@@ -15,89 +16,22 @@
 }
 else
 {
-	<EditForm Model=@m_CurrentModel OnValidSubmit="@OnSignIn" OnInvalidSubmit="@OnFailedSignIn">
-		<div class="form-group">
-			<label for="UserName">Username:</label>
-			<InputText @bind-Value=m_CurrentModel.UserName class="form-control" id="UserName"></InputText>
-		</div>
-		<div class="form-group">
-			<label for="Password">Password:</label>
-			<InputText @bind-Value=m_CurrentModel.Password class="form-control" id="Password"></InputText>
-		</div>
-		<div class="form-group">
-			<label for="Email">Email:</label>
-			<InputText @bind-Value=m_CurrentModel.Email class="form-control" id="Email"></InputText>
-		</div>
-		<div class="form-group">
-			<label for="CCN">Credit Card:</label>
-			<InputText @bind-Value=m_CurrentModel.CreditCardNumber class="form-control" id="CCN"></InputText>
-		</div>
-		<div class="form-group">
-			<label for="IsAdmin">Is Admin:</label>
-			<InputCheckbox @bind-Value=m_CurrentModel.IsAdmin class="form-control" id="IsAdmin"></InputCheckbox>
-		</div>
-		<input type="submit" class="btn btn-primary" value="Save"/>
-	</EditForm>
-
-	@if(m_FailedSignIn)
-	{
-		<div>
-			<style>
-				div {
-					color: red;
-					border: dashed;
-				}
-			</style>
-			<div>
-				Failed to sign in, please try again.
-			</div>
-		</div>
-
-		<div>Test</div>
-	}
+	<AccountCreator OnValidAccountCreated="OnValidAccountCreated" />
 }
+
+@Store.CurrentUser.HasValue().ToString()
 
 @code {
 	private bool m_IsSignedIn => Store.CurrentUser.HasValue();
-
-	private AccountModel m_CurrentModel { get; set; } = new AccountModel();
-	private bool m_FailedSignIn = false;
-
-	class AccountModel
-	{
-		[Required]
-		[StringLength(64, MinimumLength = 4, ErrorMessage = "Username must be between 4-64 charictors long.")]
-		public string? UserName = "";
-		[Required]
-		[StringLength(64, MinimumLength = 8, ErrorMessage = "Password must be between 8-64 charictors long.")]
-		public string? Password = "";
-		[Required]
-		public string? Email = "";
-		[Required]
-		public string? CreditCardNumber = "";
-		[Required]
-		public bool IsAdmin = false; 
-	}
 
 	void OnSignOut()
 	{
 		Store.CurrentUser = new Option<AccountInfo>();
 	}
 
-	void OnFailedSignIn(EditContext context)
+	void OnValidAccountCreated(AccountInfo info)
 	{
-		m_FailedSignIn = true;
-	}
-
-	void OnSignIn(EditContext context)
-	{
-		AccountInfo info = AccountInfo.GenAccount(m_CurrentModel.UserName!, 
-												  m_CurrentModel.Password!, 
-												  m_CurrentModel.Email!, 
-												  m_CurrentModel.CreditCardNumber!, 
-												  0, 
-												  m_CurrentModel.IsAdmin);
-
-		Store.CurrentUser = info;
+		Store.CurrentUser = new Option<AccountInfo>(info);
+		StateHasChanged();
 	}
 }

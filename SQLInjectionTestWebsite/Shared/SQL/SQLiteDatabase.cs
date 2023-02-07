@@ -25,6 +25,11 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			return changedRows;
 		}
 
+		public void DropTable(string name)
+		{
+			ExecuteCommand($"DROP TABLE IF EXISTS {name};");
+		}
+
 		public void SerializeObjects<T>(string tableName, IEnumerable<T> objects)
 		{
 			string commands = SQLSerializer.GetSerializeCommands(tableName, objects);
