@@ -5,6 +5,29 @@
 <NavBar CurrentPageName="Account"></NavBar>
 <h3>AccountInfoPage</h3>
 
-@code {
+@if (Store.CurrentUser.HasValue())
+{
+	AccountInfo current = Store.CurrentUser.Value;
 
+	<div>
+		<div>Username: @current.UserName</div>
+		<div>Password: @current.Password</div>
+		<div>Email: @current.Email</div>
+		<div>Credit Card: @current.CreditCardNumber</div>
+		<div>Current Balance: @(MathF.Floor(current.CurrentBalance))$</div>
+	</div>
+}
+
+@code {
+	private EditAccountType m_CurrentEditingType = EditAccountType.None;
+
+	enum EditAccountType
+	{
+		Username,
+		Password,
+		Email,
+		CreditCard,
+		CurrentBalance,
+		None,
+	}
 }

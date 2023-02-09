@@ -2,8 +2,11 @@
 @inject NavigationManager Navigation
 
 <div class = "navbar">
-	@foreach((string name, string path) in Pages)
+	@foreach((var name, var info) in Pages)
 	{
+		if (!info.DisplayFunc())
+			continue;
+
 		if(CurrentPageName == name)
 		{
 			<a id="active" @onclick = "@(() => OnPageClicked(name))" href="" @onclick:preventDefault>@name</a>
@@ -21,11 +24,25 @@
 </div>
 
 @code {
+	public struct NavBarPage
+	{
+		public string Name;
+		public string Path;
+		public Func<bool> DisplayFunc;
+
+		public NavBarPage(string name, string path, Func<bool> displayFunc)
+		{
+			Name = name;
+			Path = path;
+			DisplayFunc = displayFunc;
+		}
+	}
+
 	[Parameter, EditorRequired]
 	public string CurrentPageName { get; set; } = "";
 
 	[Parameter]
-	public Dictionary<string, string> Pages { get; set; } = DefaultPageNames;
+	public Dictionary<string, NavBarPage> Pages { get; set; } = DefaultPages.ToDictionary<NavBarPage, string>(p => p.Name); 
 
 	protected override void OnInitialized()
 	{
@@ -34,15 +51,18 @@
 
 	private void OnPageClicked(string name)
 	{
-		Navigation.NavigateTo(Pages[name]);
+		Navigation.NavigateTo(Pages[name].Path);
 	}
 
-	public static Dictionary<string, string> DefaultPageNames = new Dictionary<string, string>(){
-		{ "Home", "/" },
-		{ "Account", "/AccountInfoPage" },
-		{ "Cart", "/CartPage" },
-		{ "Sign In", "/SignInPage" }
+	public static List<NavBarPage> DefaultPages = new List<NavBarPage> {
+		new NavBarPage("Home", "/", () => true),
+		new NavBarPage("Account", "/AccountInfoPage", () => Store.CurrentUser.HasValue()),
+		new NavBarPage("Cart", "/CartPage", () => true),
+		new NavBarPage("Sign In", "/SignInPage", () => true),
+		new NavBarPage("Admin", "/AdminPage", () => Store.CurrentUser.Match(ok => ok.IsAdmin, () => false))
 	};
+
+
 
 	private static Option<string> GetUserName()
 	{

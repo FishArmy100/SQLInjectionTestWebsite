@@ -1,0 +1,49 @@
+﻿@typeparam TObject 
+@using Microsoft.AspNetCore.Components.Forms;
+@using System.Reflection;
+
+@if(m_Obj != null)
+{
+	foreach(PropertyInfo property in typeof(TObject).GetProperties().Where(p => p.CanRead && p.CanWrite))
+	{
+		
+	}
+}
+
+@code {
+	[Parameter, EditorRequired]
+	public Action<TObject> OnValidSubmit { get; set; } = null!;
+
+	[Parameter, EditorRequired]
+	public Func<TObject> CreateDefault { get; set; } = null!;
+
+	private TObject m_Obj = default(TObject)!;
+
+	enum InputType
+	{
+		Number,
+		Text,
+	}
+
+	private InputType GetInputType(TypeInfo type)
+	{
+		string name = type.Name;
+		if(name == typeof(int).Name || name == typeof(float).Name || name == typeof(double).Name)
+		{
+			return InputType.Number;
+		}
+		else if(name == typeof(string).Name)
+		{
+			return InputType.Text;
+		}
+		else
+		{
+			throw new ArgumentException($"Type {name} is not a valid input type.");
+		}
+	}
+
+	protected override void OnInitialized()
+	{
+		m_Obj = CreateDefault();
+	}
+}
