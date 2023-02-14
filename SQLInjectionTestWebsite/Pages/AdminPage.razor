@@ -7,10 +7,31 @@
 <NavBar CurrentPageName="Admin"/>
 <h3>AdminPage</h3>
 
-<button @onclick="@(()=>m_IsAddingProduct = true)">Add Product</button>
+<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingNewProduct)">Add  New Product</button>
+@if(m_ProductEditorState == ProductEditorState.AddingNewProduct)
+{
+	<div style="border:solid; border-color:black">
+		<UserInputForm Object="m_ProductModel" OnValidFormSubmit="OnNewProductAdded" />
+	</div>
+}
 
 @code {
-	bool m_IsAddingProduct = false;
+	private ProductEditorState m_ProductEditorState = ProductEditorState.None;
+	private InputProductModel m_ProductModel = new InputProductModel();
+
+	private void OnNewProductAdded(InputProductModel model)
+	{
+		string id = Guid.NewGuid().ToString();
+		ProductInfo product = new ProductInfo(model.Name, model.Cost, model.Description, id, 0);
+		WebsiteDatabase.AddProduct(product);
+	}
+
+	enum ProductEditorState
+	{
+		None,
+		AddingNewProduct,
+		AddingToProduct
+	}
 
 	class InputProductModel
 	{

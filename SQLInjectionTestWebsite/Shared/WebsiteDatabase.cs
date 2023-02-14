@@ -55,5 +55,20 @@ namespace SQLInjectionTestWebsite.Shared
 
 			return s_Database.ExecuteCommand(commandString) > 0;
 		}
+
+		public static void AddProduct(ProductInfo product)
+		{
+
+		}
+
+		public static List<ProductInfo> GetProducts(string searchTerm)
+		{
+
+		}
+
+		public static void UpdateProductCount(string productId, int newCount)
+		{
+
+		}
 	}
 }
