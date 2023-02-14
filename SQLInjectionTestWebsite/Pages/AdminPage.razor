@@ -24,6 +24,8 @@
 		string id = Guid.NewGuid().ToString();
 		ProductInfo product = new ProductInfo(model.Name, model.Cost, model.Description, id, 0);
 		WebsiteDatabase.AddProduct(product);
+		m_ProductEditorState = ProductEditorState.None;
+		StateHasChanged();
 	}
 
 	enum ProductEditorState

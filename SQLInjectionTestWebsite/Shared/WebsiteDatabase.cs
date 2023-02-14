@@ -63,7 +63,7 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static List<ProductInfo> GetProducts(string searchTerm)
 		{
-
+			return new List<ProductInfo>();
 		}
 
 		public static void UpdateProductCount(string productId, int newCount)
