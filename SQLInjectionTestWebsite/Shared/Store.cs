@@ -33,5 +33,13 @@ namespace SQLInjectionTestWebsite.Shared
 		public static event EventHandler<Option<AccountInfo>>? CurrentUserChanged;
 
 		private static StoreProduct GenProduct(string name, float price, uint count) => new StoreProduct(new ProductInfo(name, price, ""), count);
+
+		public static void RefreshCurrentAccount()
+		{
+			CurrentUser.Match(ok =>
+			{
+				CurrentUser = WebsiteDatabase.TryGetAccount(ok.UserName, ok.Password);
+			});
+		}
 	}
 }

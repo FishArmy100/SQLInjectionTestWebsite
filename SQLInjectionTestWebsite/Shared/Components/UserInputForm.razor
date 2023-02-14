@@ -1,0 +1,34 @@
+﻿@typeparam TObject
+@using Meziantou.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms;
+
+
+<EditForm Model=@Object OnValidSubmit="@((context) => OnValidFormSubmit(Object))">
+	<style>
+		div .error-message {
+			color: red;
+		}
+	</style>
+	<DataAnnotationsValidator/>
+	
+	<GenericForm Model="@Object" EditorClass="form-control">
+        <FieldTemplate Context="field">
+            <div class="form-group">
+                <label for="@field.EditorId">@field.DisplayName</label>
+                @field.EditorTemplate
+				<div class="error-message">@field.FieldValidationTemplate</div>
+            </div>
+        </FieldTemplate>
+    </GenericForm>
+
+	<input type="submit" class="btn btn-primary" value="Submit"/>
+</EditForm>
+
+
+@code {
+	[Parameter, EditorRequired]
+	public TObject Object { get; set; } = default!;
+
+	[Parameter, EditorRequired]
+	public Action<TObject> OnValidFormSubmit { get; set; } = default!;
+}

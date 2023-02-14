@@ -1,9 +1,13 @@
 ﻿@page "/AccountInfoPage"
 @using SQLInjectionTestWebsite.Shared;
 @using SQLInjectionTestWebsite.Shared.Components;
+@using Microsoft.AspNetCore.Components.Forms;
+@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel;
+@inject IJSRuntime jsRuntime
 
 <NavBar CurrentPageName="Account"></NavBar>
-<h3>AccountInfoPage</h3>
+<h3>Account</h3>
 
 @if (Store.CurrentUser.HasValue())
 {
@@ -14,20 +18,61 @@
 		<div>Password: @current.Password</div>
 		<div>Email: @current.Email</div>
 		<div>Credit Card: @current.CreditCardNumber</div>
-		<div>Current Balance: @(MathF.Floor(current.CurrentBalance))$</div>
+		<div>
+			Current Balance: @(MathF.Floor(current.CurrentBalance))$
+			<button @onclick="@(() => m_IsAddingCash = true)">Add Money</button>
+		</div>
 	</div>
+
+	@if(m_IsAddingCash)
+	{
+		<UserInputForm Object="m_Input" OnValidFormSubmit="OnCashAdded"/>
+	}
+
+	<br />
+	<br />
+	<br />
+	<button @onclick="OnAccountRemoved">Delete Account</button>
+}
+else
+{
+	<p>No user selected.</p>
 }
 
 @code {
-	private EditAccountType m_CurrentEditingType = EditAccountType.None;
+	private bool m_IsAddingCash = false;
+	private CashInput m_Input = new CashInput();
 
-	enum EditAccountType
+	class CashInput
 	{
-		Username,
-		Password,
-		Email,
-		CreditCard,
-		CurrentBalance,
-		None,
+		[Required]
+		[DisplayName("Cash: $")]
+		public float Cash { get; set; }
+	}
+
+	private void OnCashAdded(CashInput input)
+	{
+		AccountInfo current = Store.CurrentUser.Value;
+		WebsiteDatabase.UpdateAccountBallance(current.UserName, current.Password, current.CurrentBalance + input.Cash);
+		m_IsAddingCash = false;
+		Store.RefreshCurrentAccount();
+		StateHasChanged();
+	}
+
+	private async void OnAccountRemoved()
+	{
+		await ShowAreYouSurePopup();
+	}
+
+	async Task ShowAreYouSurePopup()
+	{
+		bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete your account?");
+		if (confirmed)
+		{
+			AccountInfo current = Store.CurrentUser.Value;
+			WebsiteDatabase.RemoveAccount(current.UserName, current.Password);
+			Store.RefreshCurrentAccount();
+			StateHasChanged();
+		}
 	}
 }

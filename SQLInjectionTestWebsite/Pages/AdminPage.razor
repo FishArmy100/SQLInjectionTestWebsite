@@ -1,13 +1,27 @@
 ﻿@page "/AdminPage"
-@using SQLInjectionTestWebsite.Shared.Components;
-@using SQLInjectionTestWebsite.Shared;
+@using SQLInjectionTestWebsite.Shared.Components
+@using SQLInjectionTestWebsite.Shared
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
 
 <NavBar CurrentPageName="Admin"/>
 <h3>AdminPage</h3>
 
-
-
+<button @onclick="@(()=>m_IsAddingProduct = true)">Add Product</button>
 
 @code {
+	bool m_IsAddingProduct = false;
 
+	class InputProductModel
+	{
+		[Required]
+		public string Name { get; set; } = "";
+
+		[Required]
+		public float Cost { get; set; }
+
+		[Required]
+		[DataType(DataType.MultilineText)]
+		public string Description { get; set; } = "";
+	}
 }
