@@ -1,45 +1,47 @@
 ﻿# Indiana Jeans Website Requierments:
 - Fronted/UI
     - Home page
-        - Product button: requires valid account
-        - Create account
-        - Cart button: requires valid account
+        - ~~Product button: requires valid account~~
+        - ~~Create account~~
+        - ~~Cart button: requires valid account~~
     - Sign in/up page
-        - User name
-        - Password
-        - Email
-        - Phone number
-        - Credit card info
-        - Email
-    - Basic info page:
-        - Invalid sign in
-        - Confermation
+        - ~~User name~~
+        - ~~Password~~
+        - ~~Email~~
+        - Phone number *(Not required)*
+        - ~~Credit card info~~
+        - ~~Email~~ *(Not required)*
     - Product page
-        - Search Bar
+        - ~~Search Bar~~
         - Item list
-        - Home button
-        - Cart button
+        - ~~Home button~~
+        - ~~Cart button~~
     - Cart
         - Payment
     - Modify Account page:
-        - Add cash
-        - Change password
-        - Change credit card
+        - ~~Add cash~~
+        - Change password *(Not required)*
+        - Change credit card *(Not required)*
+    - Admin Page:
+        - Add new product
+        - Add to existing product
+        - View current products
 - Backend:
     - User Accounts:
-        - User ID
-        - Email
-        - Phone Number
-        - User Name 
-        - Password
+        - ~~User ID~~
+        - ~~Email~~
+        - ~~Phone Number~~
+        - ~~User Name~~
+        - ~~Password~~
         - Cart
+        - ~~Is Admin~~
         - Credit card info
-            - Card number
-            - Experation date
-            - Security code
-    - Store Items
-        - Id
-        - Name
-        - Cost
-        - Description
-    - Uses SQL database
+            - ~~Card number~~ 
+            - Experation date *(Not required)*
+            - Security code *(Not required)*
+    - ~~Store Items~~
+        - ~~Id~~
+        - ~~Name~~
+        - ~~Cost~~
+        - ~~Description~~
+    - ~~Uses SQL database~~
