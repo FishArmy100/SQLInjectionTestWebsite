@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using SQLInjectionTestWebsite.Shared
-@using SQLInjectionTestWebsite.Shared.Components;
+@using SQLInjectionTestWebsite.Shared.Components
 @using SQLInjectionTestWebsite.Shared.SQL
+@using System.Data.SQLite
+@using System.Reflection;
 @inject NavigationManager Navigation;
 
 <NavBar CurrentPageName="Home"></NavBar>
@@ -12,6 +14,7 @@
 
 <button @onclick="CreateDatabase">Create Database</button>
 <button @onclick="OnClearStoreDatabase">Clear Store Database</button>
+<button @onclick="Test">Test</button>
 
 @code {
 	void OnSearchProduct(string name)
@@ -37,5 +40,21 @@
 		SQLiteDatabase database = new SQLiteDatabase(WebsiteDatabase.DatabaseName);
 		database.DropTable(WebsiteDatabase.ProductsTableName);
 		database.DropTable(WebsiteDatabase.AccountsTableName);
+	}
+
+	void Test()
+	{
+		SQLiteConnection connection = GetConnection(WebsiteDatabase.DatabaseName);
+
+		SQLiteFunctionData data = new SQLiteFunctionData("Test", 0, FunctionType.Scalar, null!);
+		SQLiteFunctionGenerator.BindFunction(connection, data);
+	}
+
+	private static SQLiteConnection GetConnection(string databaseName)
+	{
+		string location = Assembly.GetExecutingAssembly().Location;
+		string? folder = Path.GetDirectoryName(location);
+		string uri = $"{folder}\\{databaseName}.db";
+		return new SQLiteConnection($"URI=file:{uri}");
 	}
 }
