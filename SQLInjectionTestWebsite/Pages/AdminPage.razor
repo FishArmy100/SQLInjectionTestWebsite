@@ -8,11 +8,17 @@
 <h3>AdminPage</h3>
 
 <button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingNewProduct)">Add  New Product</button>
+<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingToProduct)"></button>
 @if(m_ProductEditorState == ProductEditorState.AddingNewProduct)
 {
 	<div style="border:solid; border-color:black">
 		<UserInputForm Object="m_ProductModel" OnValidFormSubmit="OnNewProductAdded" />
 	</div>
+}
+
+@if(m_ProductEditorState == ProductEditorState.AddingToProduct)
+{
+	<SearchBar OnMessageSearched="OnProductSearched"/>
 }
 
 @code {
@@ -26,6 +32,11 @@
 		WebsiteDatabase.AddProduct(product);
 		m_ProductEditorState = ProductEditorState.None;
 		StateHasChanged();
+	}
+
+	private void OnProductSearched(string searchTerm)
+	{
+		
 	}
 
 	enum ProductEditorState

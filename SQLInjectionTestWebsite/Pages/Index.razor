@@ -46,8 +46,7 @@
 	{
 		SQLiteConnection connection = GetConnection(WebsiteDatabase.DatabaseName);
 
-		SQLiteFunctionData data = new SQLiteFunctionData("Test", 0, FunctionType.Scalar, null!);
-		SQLiteFunctionGenerator.BindFunction(connection, data);
+		SQLiteFunctionGenerator.Test(connection);
 	}
 
 	private static SQLiteConnection GetConnection(string databaseName)

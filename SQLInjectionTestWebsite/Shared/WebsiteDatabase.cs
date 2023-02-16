@@ -13,7 +13,7 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static bool TryCreateAccount(AccountInfo account)
 		{
-			var accounts = s_Database.DeserializeObjects<AccountInfo>(AccountsTableName, $"SELECT * FROM {AccountsTableName} WHERE UserName = '{account.UserName}'");
+			var accounts = s_Database.DeserializeObjects<AccountInfo>(AccountsTableName, $"SELECT * FROM {AccountsTableName} WHERE {nameof(AccountInfo.UserName)} = '{account.UserName}'");
 			if (accounts.Count != 0)
 				return false;
 
@@ -56,9 +56,14 @@ namespace SQLInjectionTestWebsite.Shared
 			return s_Database.ExecuteCommand(commandString) > 0;
 		}
 
-		public static void AddProduct(ProductInfo product)
+		public static bool AddProduct(ProductInfo product)
 		{
+			var products = s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, $"SELECT * FROM {ProductsTableName} WHERE {nameof(ProductInfo.ID)} = '{product.ID}'");
+			if (products.Count >= 1)
+				return false;
 
+			s_Database.SerializeObjects(ProductsTableName, new ProductInfo[] { product });
+			return true;
 		}
 
 		public static List<ProductInfo> GetProducts(string searchTerm)
