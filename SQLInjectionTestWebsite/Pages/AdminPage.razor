@@ -34,6 +34,11 @@
 		StateHasChanged();
 	}
 
+	protected override void OnInitialized()
+	{
+		WebsiteDatabase.ProductsUpdated += async (_, _) => { await InvokeAsync(StateHasChanged); };
+	}
+
 	private void OnProductSearched(string searchTerm)
 	{
 		

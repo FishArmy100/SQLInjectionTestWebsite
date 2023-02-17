@@ -11,6 +11,8 @@ namespace SQLInjectionTestWebsite.Shared
 
 		private static readonly SQLiteDatabase s_Database = new SQLiteDatabase(DatabaseName);
 
+		public static event EventHandler? ProductsUpdated;
+
 		public static bool TryCreateAccount(AccountInfo account)
 		{
 			var accounts = s_Database.DeserializeObjects<AccountInfo>(AccountsTableName, $"SELECT * FROM {AccountsTableName} WHERE {nameof(AccountInfo.UserName)} = '{account.UserName}'");
@@ -63,6 +65,7 @@ namespace SQLInjectionTestWebsite.Shared
 				return false;
 
 			s_Database.SerializeObjects(ProductsTableName, new ProductInfo[] { product });
+			ProductsUpdated?.Invoke(null, EventArgs.Empty);
 			return true;
 		}
 
@@ -80,7 +83,9 @@ namespace SQLInjectionTestWebsite.Shared
 					$"{nameof(ProductInfo.ID)} = '{productId}'" +
 					$"LIMIT 1";
 
-			return s_Database.ExecuteCommand(commandString) > 0;
+			bool updated = s_Database.ExecuteCommand(commandString) > 0;
+			ProductsUpdated?.Invoke(null, EventArgs.Empty);
+			return updated;
 		}
 	}
 }

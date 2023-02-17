@@ -8,10 +8,8 @@
 	
 	@if(m_IsUpdateingProduct)
 	{
-		
+		<UserInputForm Object="m_Model" OnValidFormSubmit="OnProductModelSubmited" />
 	}
-
-
 </div>
 
 @code {
@@ -22,4 +20,21 @@
 
 	[Parameter, EditorRequired]
 	public Action OnProductUpdated { get; set; } = null!;
+
+	private ProductCountModel m_Model = new ProductCountModel();
+
+	protected override void OnParametersSet()
+	{
+		m_Model.Count = Product.Count;
+	}
+
+	private void OnProductModelSubmited(ProductCountModel model)
+	{
+		WebsiteDatabase.UpdateProductCount(Product.ID, model.Count);
+	}
+
+	class ProductCountModel
+	{
+		public int Count { get; set; }
+	}
 }
