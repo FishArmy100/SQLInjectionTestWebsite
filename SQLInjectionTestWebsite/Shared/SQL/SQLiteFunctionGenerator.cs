@@ -36,15 +36,18 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 
 			BindAllCustomFunctions(connection);
 
-			//SQLiteDatabase database = new SQLiteDatabase(WebsiteDatabase.DatabaseName);
-			//database.SerializeObjects(WebsiteDatabase.ProductsTableName, new List<ProductInfo> 
-			//{ 
-			//	new ProductInfo("Test", 4.0f, "111", "A test product", 200000) 
-			//});
+			SQLiteDatabase database = new SQLiteDatabase(WebsiteDatabase.DatabaseName);
+			database.SerializeObjects(WebsiteDatabase.ProductsTableName, new List<ProductInfo>
+			{
+				new ProductInfo("Test", 4.0f, "111", "A test product", 200000)
+			});
 
 			SQLiteCommand command = connection.CreateCommand();
-			string tupleText = $"{nameof(ProductInfo.Name)}, {nameof(ProductInfo.Cost)}, {nameof(ProductInfo.Description)}, {nameof(ProductInfo.ID)}, {nameof(ProductInfo.Count)}";
-			command.CommandText = $"SELECT {tupleText} FROM {WebsiteDatabase.ProductsTableName} WHERE STORESEARCH('Worked', ({tupleText}))";
+			string tupleText = $"{nameof(ProductInfo.Name)}, {nameof(ProductInfo.Description)}";
+			string commandText = $"SELECT STORESEARCH('Test', ({tupleText})) FROM {WebsiteDatabase.ProductsTableName};";
+			Console.WriteLine(commandText);
+			command.CommandText = commandText;
+
 			SQLiteDataReader reader = command.ExecuteReader();
 
 			while (reader.Read())

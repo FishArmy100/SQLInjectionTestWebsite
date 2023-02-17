@@ -1,0 +1,25 @@
+﻿
+<div class="admin-product">
+	Name: @Product.Name <br />
+	Cost: $@Product.Cost <br />
+	Description: @Product.Description <br />
+	<br />
+	Count: @Product.Count <button @onclick="@(()=>m_IsUpdateingProduct = true)">Update</button>
+	
+	@if(m_IsUpdateingProduct)
+	{
+		
+	}
+
+
+</div>
+
+@code {
+	private bool m_IsUpdateingProduct = false;
+
+	[Parameter, EditorRequired]
+	public ProductInfo Product { get; set; } = null!;
+
+	[Parameter, EditorRequired]
+	public Action OnProductUpdated { get; set; } = null!;
+}

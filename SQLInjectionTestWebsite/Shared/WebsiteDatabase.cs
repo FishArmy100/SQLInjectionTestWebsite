@@ -68,12 +68,19 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static List<ProductInfo> GetProducts(string searchTerm)
 		{
-			return new List<ProductInfo>();
+			return s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, $"SELECT * FROM {ProductsTableName}");
 		}
 
-		public static void UpdateProductCount(string productId, int newCount)
+		public static bool UpdateProductCount(string productId, int newCount)
 		{
+			string commandString =
+				$"UPDATE {ProductsTableName} " +
+				$"SET {nameof(ProductInfo.Count)} = '{newCount}' " +
+				$"WHERE " +
+					$"{nameof(ProductInfo.ID)} = '{productId}'" +
+					$"LIMIT 1";
 
+			return s_Database.ExecuteCommand(commandString) > 0;
 		}
 	}
 }
