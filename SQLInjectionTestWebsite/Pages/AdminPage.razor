@@ -8,22 +8,28 @@
 <h3>AdminPage</h3>
 
 <button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingNewProduct)">Add  New Product</button>
-<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingToProduct)"></button>
+<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.EditingProduct)"></button>
 @if(m_ProductEditorState == ProductEditorState.AddingNewProduct)
 {
-	<div style="border:solid; border-color:black">
+	<div style="border:solid; border-color:grey">
 		<UserInputForm Object="m_ProductModel" OnValidFormSubmit="OnNewProductAdded" />
 	</div>
 }
 
-@if(m_ProductEditorState == ProductEditorState.AddingToProduct)
+@if(m_ProductEditorState == ProductEditorState.EditingProduct)
 {
 	<SearchBar OnMessageSearched="OnProductSearched"/>
+	foreach (ProductInfo product in WebsiteDatabase.GetProducts(m_SearchedString))
+	{
+		<AdminProduct Product="product"/>
+		<br />
+	}
 }
 
 @code {
 	private ProductEditorState m_ProductEditorState = ProductEditorState.None;
 	private InputProductModel m_ProductModel = new InputProductModel();
+	private string m_SearchedString = "";
 
 	private void OnNewProductAdded(InputProductModel model)
 	{
@@ -41,14 +47,15 @@
 
 	private void OnProductSearched(string searchTerm)
 	{
-		
+		m_SearchedString = searchTerm;
+		StateHasChanged();
 	}
 
 	enum ProductEditorState
 	{
 		None,
 		AddingNewProduct,
-		AddingToProduct
+		EditingProduct
 	}
 
 	class InputProductModel

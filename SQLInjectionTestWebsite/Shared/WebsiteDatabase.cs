@@ -87,5 +87,19 @@ namespace SQLInjectionTestWebsite.Shared
 			ProductsUpdated?.Invoke(null, EventArgs.Empty);
 			return updated;
 		}
+
+		public static bool DeleteProduct(string productId)
+		{
+			string command =
+				$"DELETE FROM {AccountsTableName} WHERE " +
+					$"{nameof(ProductInfo.ID)} = '{productId}'" +
+					$"LIMIT 1;";
+
+			bool removed = s_Database.ExecuteCommand(command) > 0;
+			if (removed)
+				ProductsUpdated?.Invoke(null, EventArgs.Empty);
+
+			return removed;
+		}
 	}
 }
