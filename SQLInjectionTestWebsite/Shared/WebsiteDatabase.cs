@@ -71,6 +71,15 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static List<ProductInfo> GetProducts(string searchTerm)
 		{
+			string command = $"SELECT * FROM {ProductsTableName} " +
+				$"WHERE KEYWORD_SEARCH('{searchTerm}', {nameof(ProductInfo.Name)}) > 0 " +
+				$"ORDER BY KEYWORD_SEARCH('{searchTerm}', {nameof(ProductInfo.Name)}) DESC";
+			
+			return s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, command);
+		}
+
+		public static List<ProductInfo> GetAllProducts()
+		{
 			return s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, $"SELECT * FROM {ProductsTableName}");
 		}
 
@@ -91,7 +100,7 @@ namespace SQLInjectionTestWebsite.Shared
 		public static bool DeleteProduct(string productId)
 		{
 			string command =
-				$"DELETE FROM {AccountsTableName} WHERE " +
+				$"DELETE FROM {ProductsTableName} WHERE " +
 					$"{nameof(ProductInfo.ID)} = '{productId}'" +
 					$"LIMIT 1;";
 

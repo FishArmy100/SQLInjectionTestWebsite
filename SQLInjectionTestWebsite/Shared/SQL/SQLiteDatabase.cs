@@ -17,6 +17,8 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 		public int ExecuteCommand(string commandString)
 		{
 			m_Connection.Open();
+			SQLiteFunctionGenerator.BindAllCustomFunctions(m_Connection);
+
 			using SQLiteCommand command = m_Connection.CreateCommand();
 			command.CommandText = commandString;
 			int changedRows = command.ExecuteNonQuery();
@@ -44,6 +46,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 		public List<T> ExecuteReadCommand<T>(string commandString, Func<SQLiteDataReader, T> valueConverter)
 		{
 			m_Connection.Open();
+			SQLiteFunctionGenerator.BindAllCustomFunctions(m_Connection);
 			using SQLiteCommand command = m_Connection.CreateCommand();
 			command.CommandText = commandString;
 			using SQLiteDataReader reader = command.ExecuteReader();

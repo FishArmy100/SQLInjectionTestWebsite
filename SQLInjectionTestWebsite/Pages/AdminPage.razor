@@ -8,7 +8,7 @@
 <h3>AdminPage</h3>
 
 <button @onclick="@(()=>m_ProductEditorState = ProductEditorState.AddingNewProduct)">Add  New Product</button>
-<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.EditingProduct)"></button>
+<button @onclick="@(()=>m_ProductEditorState = ProductEditorState.EditingProduct)">Edit Product</button>
 @if(m_ProductEditorState == ProductEditorState.AddingNewProduct)
 {
 	<div style="border:solid; border-color:grey">
@@ -19,7 +19,12 @@
 @if(m_ProductEditorState == ProductEditorState.EditingProduct)
 {
 	<SearchBar OnMessageSearched="OnProductSearched"/>
-	foreach (ProductInfo product in WebsiteDatabase.GetProducts(m_SearchedString))
+	
+	var products = !string.IsNullOrEmpty(m_SearchedString) ?
+						WebsiteDatabase.GetProducts(m_SearchedString) :
+						WebsiteDatabase.GetAllProducts();
+
+	foreach (ProductInfo product in products)
 	{
 		<AdminProduct Product="product"/>
 		<br />
@@ -29,7 +34,7 @@
 @code {
 	private ProductEditorState m_ProductEditorState = ProductEditorState.None;
 	private InputProductModel m_ProductModel = new InputProductModel();
-	private string m_SearchedString = "";
+	private string? m_SearchedString = null;
 
 	private void OnNewProductAdded(InputProductModel model)
 	{
@@ -37,6 +42,7 @@
 		ProductInfo product = new ProductInfo(model.Name, model.Cost, model.Description, id, 0);
 		WebsiteDatabase.AddProduct(product);
 		m_ProductEditorState = ProductEditorState.None;
+		m_ProductModel = new InputProductModel();
 		StateHasChanged();
 	}
 

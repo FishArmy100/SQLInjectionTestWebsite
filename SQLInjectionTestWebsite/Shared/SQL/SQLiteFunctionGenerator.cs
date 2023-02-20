@@ -30,34 +30,6 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			connection.BindFunction(attribute, wrapper);
 		}
 
-		public static void Test(SQLiteConnection connection)
-		{
-			connection.Open();
-
-			BindAllCustomFunctions(connection);
-
-			SQLiteDatabase database = new SQLiteDatabase(WebsiteDatabase.DatabaseName);
-			database.SerializeObjects(WebsiteDatabase.ProductsTableName, new List<ProductInfo>
-			{
-				new ProductInfo("Test", 4.0f, "111", "A test product", 200000)
-			});
-
-			SQLiteCommand command = connection.CreateCommand();
-			string tupleText = $"{nameof(ProductInfo.Name)}, {nameof(ProductInfo.Description)}";
-			string commandText = $"SELECT STORESEARCH('Test', ({tupleText})) FROM {WebsiteDatabase.ProductsTableName};";
-			Console.WriteLine(commandText);
-			command.CommandText = commandText;
-
-			SQLiteDataReader reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				Console.WriteLine(reader.GetString(0));
-			}
-
-			connection.Close();
-		}
-
 		private class SQLFunctionFinder
 		{
 			public readonly List<SQLiteFunctionData> FunctionDatas;
