@@ -5,15 +5,7 @@
 
 <NavBar CurrentPageName="None"></NavBar>
 <SearchBar OnMessageSearched="OnSearch"/>
-
-<div class="products-grid">
-	@foreach(ProductInfo product in m_Products)
-	{
-		<div class="grid-element">
-			<ProductCard Product="product" />
-		</div>
-	}
-</div>
+<ProductGrid Products="m_Products"/>
 
 @code {
 	[Parameter]

@@ -57,7 +57,7 @@
 	public static List<NavBarPage> DefaultPages = new List<NavBarPage> {
 		new NavBarPage("Home", "/", () => true),
 		new NavBarPage("Account", "/AccountInfoPage", () => Store.CurrentUser.HasValue()),
-		new NavBarPage("Cart", "/CartPage", () => true),
+		new NavBarPage("Cart", "/CartPage", () => Store.CurrentUser.HasValue()),
 		new NavBarPage("Sign In", "/SignInPage", () => true),
 		new NavBarPage("Admin", "/AdminPage", () => Store.CurrentUser.Match(ok => ok.IsAdmin, () => false))
 	};

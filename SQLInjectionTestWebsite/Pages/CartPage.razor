@@ -3,8 +3,24 @@
 @using SQLInjectionTestWebsite.Shared.Components;
 
 <NavBar CurrentPageName="Cart"></NavBar>
-<h3>CartPage</h3>
+<h3>Cart:</h3>
+@if(m_CartProducts.Count > 0)
+{
+	<ProductGrid Products="m_CartProducts"/>
+}
+else
+{
+	<p>Cart is empty.</p>
+}
 
 @code {
+	private List<ProductInfo> m_CartProducts = new List<ProductInfo>();
 
+	protected override void OnParametersSet()
+	{
+		Store.CurrentUser.Match(ok =>
+		{
+			m_CartProducts = CartItemParser.ParseProducts(ok.ID);
+		});
+	}
 }

@@ -12,5 +12,36 @@
 				.ToList();
 			return products;
 		}
+
+		public static string EncodeProducts(IEnumerable<ProductInfo> products)
+		{
+			return string.Join(Seperator, products.Select(p => p.ID));
+		}
+
+		public static AccountInfo AddToCart(ProductInfo product, AccountInfo account)
+		{
+			string cartItems = account.CartItems;
+			if(!cartItems.Split(Seperator).Contains(product.ID))
+			{
+				cartItems += Seperator + product.ID;
+			}
+
+			return new AccountInfo(account.UserName, account.Password, account.Email, account.CreditCardNumber, account.ID, account.CurrentBalance, account.IsAdmin, cartItems);
+		}
+
+		public static AccountInfo RemoveFromAccount(ProductInfo product, AccountInfo account)
+		{
+			var products = ParseProducts(account.CartItems);
+			var modifiedProducts = products.Where(p => p.ID != product.ID);
+			string encodedProducts = EncodeProducts(modifiedProducts);
+			return new AccountInfo(account.UserName, account.Password, account.Email, account.CreditCardNumber, account.ID, account.CurrentBalance, account.IsAdmin, encodedProducts);
+		}
+
+		public static bool IsInCart(ProductInfo product, AccountInfo account)
+		{
+			return account.CartItems
+				.Split(Seperator)
+				.Contains(product.ID);
+		}
 	}
 }

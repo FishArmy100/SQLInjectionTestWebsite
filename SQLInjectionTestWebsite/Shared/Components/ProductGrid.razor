@@ -1,0 +1,14 @@
+﻿
+<div class="products-grid">
+	@foreach (ProductInfo product in Products)
+	{
+		<div class="grid-element">
+			<ProductCard Product="product" />
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter, EditorRequired]
+	public List<ProductInfo> Products { get; set; } = new List<ProductInfo>();
+}

@@ -1,0 +1,17 @@
+﻿.products-grid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, 186px);
+    grid-auto-rows: 1fr;
+}
+
+.products-grid .grid-element {
+    margin-bottom: 0px;
+}
+
+#searchbar {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 15px;
+    width: 50%;
+}
