@@ -21,7 +21,7 @@
 	<SearchBar OnMessageSearched="OnProductSearched"/>
 	
 	var products = !string.IsNullOrEmpty(m_SearchedString) ?
-						WebsiteDatabase.GetProducts(m_SearchedString) :
+						WebsiteDatabase.SearchProducts(m_SearchedString) :
 						WebsiteDatabase.GetAllProducts();
 
 	foreach (ProductInfo product in products)

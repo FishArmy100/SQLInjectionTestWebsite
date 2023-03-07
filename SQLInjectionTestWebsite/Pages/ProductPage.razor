@@ -6,11 +6,19 @@
 <NavBar CurrentPageName="None"></NavBar>
 <SearchBar OnMessageSearched="OnSearch"/>
 
-<h3>ProductPage</h3>
+<div class="products-grid">
+	@foreach(ProductInfo product in m_Products)
+	{
+		<div class="grid-element">
+			<ProductCard Product="product" />
+		</div>
+	}
+</div>
 
 @code {
 	[Parameter]
 	public string SearchedProduct { get; set; } = "";
+	private List<ProductInfo> m_Products = null!;
 
 	public void OnSearch(string name)
 	{
@@ -19,6 +27,6 @@
 
 	protected override void OnParametersSet()
 	{
-		
+		m_Products = WebsiteDatabase.SearchProducts(SearchedProduct);
 	}
 }

@@ -19,8 +19,10 @@ namespace SQLInjectionTestWebsite.Shared
 		public float CurrentBalance;
 		[SQLSerializeableField]
 		public readonly bool IsAdmin;
+        [SQLSerializeableField]
+        public readonly string CartItems;
 
-        public AccountInfo(string userName, string password, string email, string creditCardNumber, string iD, float currentBalance, bool isAdmin)
+        public AccountInfo(string userName, string password, string email, string creditCardNumber, string iD, float currentBalance, bool isAdmin, string cartItems)
         {
             UserName = userName;
             Password = password;
@@ -29,12 +31,13 @@ namespace SQLInjectionTestWebsite.Shared
             ID = iD;
             CurrentBalance = currentBalance;
             IsAdmin = isAdmin;
+            CartItems = cartItems;
         }
 
-        public static AccountInfo GenAccount(string userName, string password, string email, string creditCardNumber, float currentBalance = 0, bool isAdmin = false)
+        public static AccountInfo GenAccount(string userName, string password, string email, string creditCardNumber, float currentBalance = 0, bool isAdmin = false, string cartItems = "")
         {
             string id = Guid.NewGuid().ToString();
-            return new AccountInfo(userName, password, email, creditCardNumber, id, currentBalance, isAdmin);
+            return new AccountInfo(userName, password, email, creditCardNumber, id, currentBalance, isAdmin, cartItems);
         }
     }
 }

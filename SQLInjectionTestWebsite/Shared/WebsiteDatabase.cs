@@ -69,7 +69,7 @@ namespace SQLInjectionTestWebsite.Shared
 			return true;
 		}
 
-		public static List<ProductInfo> GetProducts(string searchTerm)
+		public static List<ProductInfo> SearchProducts(string searchTerm)
 		{
 			string command = $"SELECT * FROM {ProductsTableName} " +
 				$"WHERE KEYWORD_SEARCH('{searchTerm}', {nameof(ProductInfo.Name)}) > 0 " +

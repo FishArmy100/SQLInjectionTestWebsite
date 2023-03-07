@@ -12,26 +12,12 @@
 	<SearchBar OnMessageSearched = "OnSearchProduct"/>
 </div>
 
-<button @onclick="CreateDatabase">Create Database</button>
 <button @onclick="OnClearStoreDatabase">Clear Store Database</button>
 
 @code {
 	void OnSearchProduct(string name)
 	{
 		Navigation.NavigateTo("/ProductPage/" + name);
-	}
-
-	void CreateDatabase()
-	{
-		AccountInfo info = new AccountInfo("Bob", "234", "bobbob@gmail.com", "444-555-666", "bobbob", 0, false);
-		Console.WriteLine("Created account: " + WebsiteDatabase.TryCreateAccount(info));
-
-		AccountInfo gottenAccount = WebsiteDatabase.TryGetAccount("Bob", "234").Value;
-		Console.WriteLine("Got account: " + gottenAccount.UserName + ", Balance = " + gottenAccount.CurrentBalance);
-
-		Console.WriteLine("Updated ballance: " + WebsiteDatabase.UpdateAccountBallance("Bob", "234", 50));
-		gottenAccount = WebsiteDatabase.TryGetAccount("Bob", "234").Value;
-		Console.WriteLine("New ballance = " + gottenAccount.CurrentBalance);
 	}
 
 	void OnClearStoreDatabase()
