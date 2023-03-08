@@ -3,7 +3,7 @@
 	@foreach (ProductInfo product in Products)
 	{
 		<div class="grid-element">
-			<ProductCard Product="product" />
+			<ProductCard Product="product" OnStateChanged="@(() => {StateHasChanged(); OnGridUpdated?.Invoke();})" />
 		</div>
 	}
 </div>
@@ -11,4 +11,7 @@
 @code {
 	[Parameter, EditorRequired]
 	public List<ProductInfo> Products { get; set; } = new List<ProductInfo>();
+
+	[Parameter]
+	public Action? OnGridUpdated { get; set; } = null;
 }

@@ -49,7 +49,20 @@ namespace SQLInjectionTestWebsite.Shared
 		{
 			string commandString =
 				$"UPDATE {AccountsTableName} " +
-				$"SET CurrentBalance = '{newBalance}' " +
+				$"SET {nameof(AccountInfo.CurrentBalance)} = '{newBalance}' " +
+				$"WHERE " +
+					$"{nameof(AccountInfo.UserName)} = '{accountName}' AND " +
+					$"{nameof(AccountInfo.Password)} = '{password}' " +
+					$"LIMIT 1";
+
+			return s_Database.ExecuteCommand(commandString) > 0;
+		}
+
+		public static bool UpdateAccountCart(string accountName, string password, string newCart)
+		{
+			string commandString =
+				$"UPDATE {AccountsTableName} " +
+				$"SET {nameof(AccountInfo.CartItems)} = '{newCart}' " +
 				$"WHERE " +
 					$"{nameof(AccountInfo.UserName)} = '{accountName}' AND " +
 					$"{nameof(AccountInfo.Password)} = '{password}' " +

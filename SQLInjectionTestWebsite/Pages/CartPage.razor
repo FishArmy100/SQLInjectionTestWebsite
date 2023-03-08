@@ -6,7 +6,8 @@
 <h3>Cart:</h3>
 @if(m_CartProducts.Count > 0)
 {
-	<ProductGrid Products="m_CartProducts"/>
+	<ProductGrid Products="m_CartProducts" OnGridUpdated="@(()=>{OnParametersSet();StateHasChanged();})"/>
+	<button @onclick="OnCheckout">Checkout</button>
 }
 else
 {
@@ -20,7 +21,12 @@ else
 	{
 		Store.CurrentUser.Match(ok =>
 		{
-			m_CartProducts = CartItemParser.ParseProducts(ok.ID);
+			m_CartProducts = CartItemParser.ParseProducts(ok.CartItems);
 		});
+	}
+
+	private void OnCheckout()
+	{
+		
 	}
 }

@@ -13,6 +13,8 @@
 </div>
 
 <button @onclick="OnClearStoreDatabase">Clear Store Database</button>
+<button @onclick="@(() => Console.WriteLine(Store.CurrentUser.Value.CartItems))">Print Cart</button>
+<button @onclick="@(() => WebsiteDatabase.UpdateAccountCart(Store.CurrentUser.Value.UserName, Store.CurrentUser.Value.Password, ""))">Clear Cart</button>
 
 @code {
 	void OnSearchProduct(string name)

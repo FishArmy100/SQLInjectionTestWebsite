@@ -29,10 +29,10 @@
 			return new AccountInfo(account.UserName, account.Password, account.Email, account.CreditCardNumber, account.ID, account.CurrentBalance, account.IsAdmin, cartItems);
 		}
 
-		public static AccountInfo RemoveFromAccount(ProductInfo product, AccountInfo account)
+		public static AccountInfo RemoveFromCart(ProductInfo product, AccountInfo account)
 		{
 			var products = ParseProducts(account.CartItems);
-			var modifiedProducts = products.Where(p => p.ID != product.ID);
+			var modifiedProducts = products.Where(p => p.ID != product.ID).ToList();
 			string encodedProducts = EncodeProducts(modifiedProducts);
 			return new AccountInfo(account.UserName, account.Password, account.Email, account.CreditCardNumber, account.ID, account.CurrentBalance, account.IsAdmin, encodedProducts);
 		}

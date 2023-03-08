@@ -25,6 +25,11 @@
     border-radius: 5px;
 }
 
+.product-card button.product-in-cart {
+    background-color: #04AA6D;
+    color: white;
+}
+
 .product-card button:hover {
     background-color: #ddd;
     color: black;

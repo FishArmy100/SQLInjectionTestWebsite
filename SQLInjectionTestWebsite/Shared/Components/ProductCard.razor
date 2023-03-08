@@ -1,17 +1,53 @@
-﻿
+﻿@inject NavigationManager Navigation;
+
 <div class="product-card">
 	<h1>@(Product.Name)</h1>
 	<p class="price">$@(Product.Cost)</p>
 	<p>@(Product.Description)</p>
-	<p><button @onclick="OnAddedToCart">Add to Cart</button></p>
+	@if(Store.CurrentUser.Match(ok => CartItemParser.IsInCart(Product, ok), () => false))
+	{
+		<p><button @onclick="OnRemovedFromCart" class="product-in-cart">Remove from Cart</button></p>
+	}
+	else
+	{
+		<p><button @onclick="OnAddedToCart">Add to Cart</button></p>
+	}
 </div>
 
 @code {
 	[Parameter, EditorRequired]
 	public ProductInfo Product { get; set; } = null!;
+	[Parameter, EditorRequired]
+	public Action OnStateChanged { get; set; } = null!;
+
 
 	private void OnAddedToCart()
 	{
-		Console.WriteLine($"Product added to cart: {Product.Name}");
+		Store.CurrentUser.Match(ok =>
+		{
+			AccountInfo updated = CartItemParser.AddToCart(Product, ok);
+			Console.WriteLine("Was added: " + WebsiteDatabase.UpdateAccountCart(updated.UserName, updated.Password, updated.CartItems));
+			Store.RefreshCurrentAccount();
+			OnStateChanged?.Invoke();
+		},
+		() =>
+		{
+			Navigation.NavigateTo("/SignInPage");
+		});
+	}
+
+	private void OnRemovedFromCart()
+	{
+		Store.CurrentUser.Match(ok =>
+		{
+			AccountInfo updated = CartItemParser.RemoveFromCart(Product, ok);
+			WebsiteDatabase.UpdateAccountCart(updated.UserName, updated.Password, updated.CartItems);
+			Store.RefreshCurrentAccount();
+			OnStateChanged?.Invoke();
+		},
+		() =>
+		{
+			Navigation.NavigateTo("/SignInPage");
+		});
 	}
 }

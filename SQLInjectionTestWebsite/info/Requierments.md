@@ -13,7 +13,7 @@
         - ~~Email~~ *(Not required)*
     - Product page
         - ~~Search Bar~~
-        - Item list
+        - ~~Item list~~
         - ~~Home button~~
         - ~~Cart button~~
     - Cart
@@ -23,8 +23,8 @@
         - Change password *(Not required)*
         - Change credit card *(Not required)*
     - Admin Page:
-        - Add new product
-        - Add to existing product
+        - ~~Add new product~~
+        - ~~Add to existing product~~
         - View current products
 - Backend:
     - User Accounts:
@@ -33,7 +33,7 @@
         - ~~Phone Number~~
         - ~~User Name~~
         - ~~Password~~
-        - Cart
+        - ~~Cart~~
         - ~~Is Admin~~
         - Credit card info
             - ~~Card number~~ 
