@@ -1,21 +1,40 @@
 ﻿@page "/CartPage"
 @using SQLInjectionTestWebsite.Shared
 @using SQLInjectionTestWebsite.Shared.Components;
+@using SQLInjectionTestWebsite.Shared.Utils;
+@inject NavigationManager Navigation;
 
-<NavBar CurrentPageName="Cart"></NavBar>
-<h3>Cart:</h3>
-@if(m_CartProducts.Count > 0)
+@if(!m_HasCheckedOut)
 {
-	<ProductGrid Products="m_CartProducts" OnGridUpdated="@(()=>{OnParametersSet();StateHasChanged();})"/>
-	<button @onclick="OnCheckout">Checkout</button>
+	<NavBar CurrentPageName="Cart"></NavBar>
+	<h3>Cart:</h3>
+	@if (m_CartProducts.Count > 0)
+	{
+		<ProductGrid Products="m_CartProducts" OnGridUpdated="@(()=>{OnParametersSet();StateHasChanged();})" />
+		<button @onclick="OnCheckout">Checkout</button>
+		@if(m_CheckoutError.HasValue())
+		{
+			<div style="color:red">
+				<p>Error: @(m_CheckoutError.Value)</p>
+			</div>
+		}
+	}
+	else
+	{
+		<p>Cart is empty.</p>
+	}
 }
 else
 {
-	<p>Cart is empty.</p>
+	<p>Thank you for your pourchase @(Store.CurrentUser.Value.UserName)!</p>
+	<button @onclick="OnHasCheckedOutContinuePressed">Continue</button>
 }
+
 
 @code {
 	private List<ProductInfo> m_CartProducts = new List<ProductInfo>();
+	private bool m_HasCheckedOut = false;
+	private Option<string> m_CheckoutError = new Option<string>();
 
 	protected override void OnParametersSet()
 	{
@@ -27,6 +46,34 @@ else
 
 	private void OnCheckout()
 	{
-		
+		float cost = m_CartProducts.Select(p => p.Cost).Sum();
+		AccountInfo account = Store.CurrentUser.Value;
+		float balance = account.CurrentBalance;
+		if(cost > balance)
+		{
+			m_CheckoutError = "Insuficient funds.";
+		}
+		else if(!m_CartProducts.All(p => p.Count > 0))
+		{
+			m_CheckoutError = "Insuficient stock.";
+		}
+		else
+		{
+			foreach (ProductInfo product in m_CartProducts)
+			{
+				WebsiteDatabase.UpdateProductCount(product.ID, product.Count - 1);
+			}
+
+			WebsiteDatabase.UpdateAccountBallance(account.UserName, account.Password, balance - cost);
+			WebsiteDatabase.UpdateAccountCart(account.UserName, account.Password, "");
+			Store.RefreshCurrentAccount();
+			m_HasCheckedOut = true;
+			m_CheckoutError = new Option<string>();
+		}
+	}
+
+	private void OnHasCheckedOutContinuePressed()
+	{
+		Navigation.NavigateTo("/");
 	}
 }
