@@ -3,6 +3,14 @@
 <div class="product-card">
 	<h1>@(Product.Name)</h1>
 	<p class="price">$@(Product.Cost)</p>
+	@if (Product.Count > 0)
+	{
+		<p>Stock: @Product.Count</p>
+	}
+	else
+	{
+		<p><b>Out of Stock.</b></p>
+	}
 	<p>@(Product.Description)</p>
 	@if(Store.CurrentUser.Match(ok => CartItemParser.IsInCart(Product, ok), () => false))
 	{
