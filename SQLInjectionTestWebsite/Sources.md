@@ -4,4 +4,6 @@
   - [Examples](https://www.meziantou.net/automatically-generate-a-form-from-an-object-in-blazor.htm)
 - [Product Card](https://www.w3schools.com/howto/howto_css_product_card.asp)
 - [Search Bar and Main Menu](https://www.w3schools.com/howto/howto_css_searchbar.asp)
-- [Vega Vulnerability Checker](https://subgraph.com/vega/)
+- SQL Vulnerability Scanners
+  - [Vega Vulnerability Checker](https://subgraph.com/vega/)
+  - [C# Security Extensions](https://www.c-sharpcorner.com/article/hands-free-security-scanning-within-net-applications/)
