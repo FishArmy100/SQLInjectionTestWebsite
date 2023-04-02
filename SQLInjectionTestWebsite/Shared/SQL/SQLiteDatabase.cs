@@ -49,7 +49,11 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			SQLiteFunctionGenerator.BindAllCustomFunctions(m_Connection);
 			using SQLiteCommand command = m_Connection.CreateCommand();
 			command.CommandText = commandString;
-			using SQLiteDataReader reader = command.ExecuteReader();
+
+            Console.WriteLine(commandString);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
+
 
 			List<T> result = new List<T>();
 			while (reader.Read())

