@@ -84,11 +84,14 @@ namespace SQLInjectionTestWebsite.Shared
 
 		public static List<ProductInfo> SearchProducts(string searchTerm)
 		{
+			string termVarName = "@searchTerm";
+			List<(string, object)> parameters = new List<(string, object)> { (termVarName,  searchTerm) };
+
 			string command = $"SELECT * FROM {ProductsTableName} " +
-				$"WHERE KEYWORD_SEARCH('{searchTerm}', {nameof(ProductInfo.Name)}) > 0 " +
-				$"ORDER BY KEYWORD_SEARCH('{searchTerm}', {nameof(ProductInfo.Name)}) DESC";
+				$"WHERE KEYWORD_SEARCH({termVarName}, {nameof(ProductInfo.Name)}) > 0 " +
+				$"ORDER BY KEYWORD_SEARCH({termVarName}, {nameof(ProductInfo.Name)}) DESC";
 			
-			return s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, command);
+			return s_Database.DeserializeObjects<ProductInfo>(ProductsTableName, command, parameters);
 		}
 
 		public static List<ProductInfo> GetAllProducts()

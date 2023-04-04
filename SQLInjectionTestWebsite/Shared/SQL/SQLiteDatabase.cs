@@ -14,14 +14,22 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			m_Connection = GetConnection(name);
 		}
 
-		public int ExecuteCommand(string commandString)
+		public int ExecuteCommand(string commandString, List<(string, object)>? extraParameters = null)
 		{
 			m_Connection.Open();
 			SQLiteFunctionGenerator.BindAllCustomFunctions(m_Connection);
 
 			using SQLiteCommand command = m_Connection.CreateCommand();
+
 			command.CommandText = commandString;
-			int changedRows = command.ExecuteNonQuery();
+
+            if (extraParameters != null)
+            {
+                foreach (var (name, value) in extraParameters)
+                    command.Parameters.AddWithValue(name, value);
+            }
+
+            int changedRows = command.ExecuteNonQuery();
 			m_Connection.Close();
 
 			return changedRows;
@@ -38,17 +46,24 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			ExecuteCommand(commands);
 		}
 
-		public List<T> DeserializeObjects<T>(string tableName, string selector)
+		public List<T> DeserializeObjects<T>(string tableName, string selector, List<(string, object)>? extraParameters = null)
 		{
-			return SQLSerializer.Deserialize<T>(tableName, selector, this);
+			extraParameters ??= new List<(string, object)>();
+			return SQLSerializer.Deserialize<T>(tableName, selector, this, extraParameters);
 		}
 
-		public List<T> ExecuteReadCommand<T>(string commandString, Func<SQLiteDataReader, T> valueConverter)
+		public List<T> ExecuteReadCommand<T>(string commandString, Func<SQLiteDataReader, T> valueConverter, List<(string, object)>? extraParameters = null)
 		{
 			m_Connection.Open();
 			SQLiteFunctionGenerator.BindAllCustomFunctions(m_Connection);
 			using SQLiteCommand command = m_Connection.CreateCommand();
 			command.CommandText = commandString;
+
+			if(extraParameters != null)
+			{
+				foreach(var (name, value) in extraParameters)
+					command.Parameters.AddWithValue(name, value);
+			}
 
             Console.WriteLine(commandString);
 

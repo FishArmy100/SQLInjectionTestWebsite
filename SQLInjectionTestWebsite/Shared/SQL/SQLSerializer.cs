@@ -49,7 +49,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			return commands;
 		}
 
-		public static List<T> Deserialize<T>(string tableName, string selectorCommand, SQLiteDatabase database)
+		public static List<T> Deserialize<T>(string tableName, string selectorCommand, SQLiteDatabase database, List<(string, object)> extraParameters)
 		{
 			CheckType<T>();
 
@@ -61,7 +61,7 @@ namespace SQLInjectionTestWebsite.Shared.SQL
 			return database.ExecuteReadCommand(commands, r =>
 			{
 				return ReadObject<T>(r);
-			});
+			}, extraParameters);
 
 		}
 
